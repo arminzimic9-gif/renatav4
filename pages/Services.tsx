@@ -223,7 +223,12 @@ export const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
                         <div className="md:w-1/2 bg-brand-stone/30 rounded-3xl p-8 w-full">
                            <h4 className="font-bold text-brand-dark mb-6 text-xl">Šta dobijate:</h4>
                            <ul className="space-y-4">
-                              {["Individualni plan prestanka pušenja", "Dugoročna podrška i praćenje", "Fleksibilno zakazivanje", "Sesije uživo ili online"].map((item, i) => (
+                              {[
+                                 "Individualni plan prestanka pušenja",
+                                 "Dugoročna podrška i praćenje",
+                                 "Fleksibilno zakazivanje",
+                                 "Sesije uživo ili online"
+                              ].map((item, i) => (
                                  <li key={i} className="flex items-start gap-3">
                                     <div className="mt-1 bg-white p-1 rounded-full shadow-sm"><CheckCircle size={16} className="text-brand-teal" /></div>
                                     <span className="text-gray-700 font-medium">{item}</span>
@@ -273,20 +278,20 @@ export const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
 
                      {/* Program Novi Početak - Screenshot Style */}
                      <div className="bg-[#0f172a] text-white rounded-[2rem] p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row gap-12 items-start border border-[#1e293b]">
-                        <div className="md:w-1/2 relative z-10">
+                        <div className="md:w-1/2 relative z-10 w-full">
                            <div className="w-14 h-14 rounded-xl bg-[#1e293b] text-gray-300 flex items-center justify-center mb-8 border border-white/5">
                               <Star size={24} strokeWidth={1.5} />
                            </div>
                            <h3 className="text-3xl sm:text-4xl font-sans font-bold mb-4 tracking-tight">Program "Novi Početak"</h3>
-                           <p className="text-gray-400 mb-8 text-sm leading-relaxed max-w-md">Najdetaljniji program sa kontinuiranom, stručno vođenom podrškom kroz cijeli proces prestanka pušenja i rada na identitetu nepušača. Kombinacija individualnog plana i grupne motivacije za trajne rezultate.</p>
+                           <p className="text-gray-400 mb-8 text-sm leading-relaxed max-w-md text-justify">Najdetaljniji program sa kontinuiranom, stručno vođenom podrškom kroz cijeli proces prestanka pušenja i rada na identitetu nepušača. Kombinacija individualnog plana i grupne motivacije za trajne rezultate.</p>
 
-                           <div className="inline-block px-4 py-2.5 bg-[#1e293b] border border-white/5 rounded-full text-xs font-medium text-gray-300 mb-10 w-full sm:w-auto">
+                           <div className="inline-block px-4 py-2.5 bg-[#1e293b] border border-white/5 rounded-[12px] text-xs font-medium text-gray-300 mb-10 w-full sm:w-auto">
                               Trajanje: 8 × 1h (2x sedmično ili po dogovoru) – uživo ili online
                            </div>
 
                            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                               <button
-                                 className="bg-white text-[#0f172a] hover:bg-gray-100 font-medium px-8 py-3.5 rounded-full transition-colors flex items-center gap-4 text-sm whitespace-nowrap"
+                                 className="bg-white text-[#0f172a] hover:bg-gray-100 font-medium px-8 py-3.5 rounded-[12px] transition-colors flex items-center gap-4 text-sm whitespace-nowrap"
                                  onClick={() => window.location.href = 'mailto:info@habitplus.ba'}
                               >
                                  Prijavi interesovanje
@@ -294,10 +299,31 @@ export const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
                               </button>
                               <span className="text-[13px] text-gray-500 max-w-[200px] leading-snug">Ostavi e-mail i obavijestit ćemo te o sljedećem terminu.</span>
                            </div>
+
+                           <div className="mt-14 max-w-md w-full">
+                              <h4 className="font-bold text-white mb-6 text-xl">Struktura programa:</h4>
+                              <div className="space-y-4">
+                                 {[
+                                    { t: "1. Razumijevanje pušenja i prestanka:", d: "Zašto pušimo, kako nastaje navika i šta se zaista dešava kada prestajemo" },
+                                    { t: "2. Planiranje i/ili priprema za budući prestanak:", d: "Postavljanje realnog cilja, izbor datuma prestanka i priprema okruženja" },
+                                    { t: "3. Zdravstvene posljedice i metode prestanka:", d: "Šta se dešava s tijelom kada prestanemo i pregled dostupnih metoda podrške" },
+                                    { t: "4. Snalaženje bez cigareta, fizički aspekt:", d: "Apstinencijska kriza, nikotinska ovisnost i kako upravljati simptomima" },
+                                    { t: "5. Snalaženje bez cigareta, emocionalni aspekt:", d: "Stres, emocije i identitet" },
+                                    { t: "6. Ostati nepušač kratkoročno:", d: "Prvi dani i sedmice bez cigareta, strategije stabilizacije" },
+                                    { t: "7. Ostati nepušač dugoročno:", d: "Prevencija povratka pušenju, društvene situacije, izazovi i rješenja" },
+                                    { t: "8. Uživanje u životu nepušača, zauvijek:", d: "Novi identitet, rutine i dugoročna sloboda od pušenja" },
+                                 ].map((str, i) => (
+                                    <div key={i} className="mb-4">
+                                       <span className="text-gray-300 font-bold text-[14px]">{str.t}</span>{' '}
+                                       <span className="text-gray-400 text-[14px] leading-snug">{str.d}</span>
+                                    </div>
+                                 ))}
+                              </div>
+                           </div>
                         </div>
 
                         {/* Right Column - Checklist */}
-                        <div className="md:w-1/2 relative z-10 bg-[#1e293b]/50 border border-white/5 rounded-[1.5rem] p-8 md:p-10 w-full backdrop-blur-sm">
+                        <div className="md:w-1/2 relative z-10 bg-[#1e293b]/50 border border-white/5 rounded-[1.5rem] p-8 md:p-10 w-full backdrop-blur-sm self-start sticky top-32">
                            <h4 className="font-bold text-white mb-6 md:mb-8 text-lg">Šta dobijaš:</h4>
                            <ul className="space-y-4 md:space-y-5">
                               {[
@@ -310,7 +336,7 @@ export const Services: React.FC<ServicesProps> = ({ onNavigate }) => {
                               ].map((item, i) => (
                                  <li key={i} className="flex items-start gap-3.5">
                                     <div className="mt-0.5 opacity-60"><CheckCircle size={18} strokeWidth={2} /></div>
-                                    <span className="text-gray-300 text-sm font-medium">{item}</span>
+                                    <span className="text-gray-300 text-[14.5px] font-medium leading-relaxed">{item}</span>
                                  </li>
                               ))}
                            </ul>

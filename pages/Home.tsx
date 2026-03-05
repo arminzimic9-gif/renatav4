@@ -14,6 +14,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
    const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
    const [isContactOpen, setIsContactOpen] = useState(false);
    const [isMailingListOpen, setIsMailingListOpen] = useState(false);
+   const [activeFaq, setActiveFaq] = useState<'individual' | 'corporate' | null>(null);
 
    // Show popup after a short delay
    useEffect(() => {
@@ -50,6 +51,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                      <p className="text-xl md:text-2xl font-bold leading-tight text-black tracking-tight min-h-[120px] flex items-center justify-center transition-opacity duration-500">
                         {(() => {
                            const quotes = [
+                              "Promjena navike počinje razumijevanjem sebe. Moj pristup je empatičan, stručan i bez osuđivanja.",
                               "Vjerujem da niko nije izgubljen slučaj. Uz pravu podršku, počinje prava promjena.",
                               "Svaki dan bez cigarete je pobjeda. Zajedno gradimo tvoju slobodu i novi identitet.",
                               "Prestanak pušenja nema veze s jačinom volje. Ono se vježba, korak po korak. Tu sam da ti pokažem kako i da budem uz tebe sve do kraja."
@@ -153,7 +155,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         </div>
                         <div>
                            <h3 className="font-bold text-slate-800 text-[18px] mb-3 leading-tight group-hover:text-brand-blue transition-colors">18+ Godina Iskustva</h3>
-                           <p className="text-gray-500 text-[15px] leading-[1.6]">U javnom zdravstvu Australije, vođenje kompleksnih tima i programa.</p>
+                           <p className="text-gray-500 text-[15px] leading-[1.6]">U javnom zdravstvu Australije, vođenje edukacija, programa i podrške u prevenciji raka.</p>
                         </div>
                      </div>
 
@@ -164,7 +166,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         </div>
                         <div>
                            <h3 className="font-bold text-slate-800 text-[18px] mb-3 leading-tight group-hover:text-brand-blue transition-colors">Prevencija Raka</h3>
-                           <p className="text-gray-500 text-[15px] leading-[1.6]">Dugogodišnja ekspertiza u onkološkoj preventivi i zaštiti.</p>
+                           <p className="text-gray-500 text-[15px] leading-[1.6]">Dugogodišnja stručnost u prevenciji i ranom otkrivanju raka.</p>
                         </div>
                      </div>
 
@@ -175,7 +177,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         </div>
                         <div>
                            <h3 className="font-bold text-slate-800 text-[18px] mb-3 leading-tight group-hover:text-brand-blue transition-colors">Psihologija Ovisnosti</h3>
-                           <p className="text-gray-500 text-[15px] leading-[1.6]">Dubinsko razumijevanje obrazaca ponašanja i oslobađanja od navika.</p>
+                           <p className="text-gray-500 text-[15px] leading-[1.6]">Razumijevanje obrazaca ponašanja i oslobađanja od štetnih navika.</p>
                         </div>
                      </div>
 
@@ -186,7 +188,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         </div>
                         <div>
                            <h3 className="font-bold text-slate-800 text-[18px] mb-3 leading-tight group-hover:text-brand-blue transition-colors">Holistički Pristup</h3>
-                           <p className="text-gray-500 text-[15px] leading-[1.6]">Fokus na cjelokupni wellbeing organizma i trajnu promjenu.</p>
+                           <p className="text-gray-500 text-[15px] leading-[1.6]">Fokus na cjelokupno zdravlje tijela i uma te trajnu promjenu.</p>
                         </div>
                      </div>
                   </div>
@@ -195,7 +197,14 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          </section>
 
          {/* 4. DA LI JE OVO ZA TEBE - Simplified */}
-         <section id="za-koga" className="py-24 bg-brand-blue relative overflow-hidden scroll-mt-24">
+         <section id="za-koga" className="py-24 relative overflow-hidden scroll-mt-24">
+            {/* Background photo */}
+            <div
+               className="absolute inset-0 bg-cover bg-no-repeat"
+               style={{ backgroundImage: 'url(/za-koga-bg.jpg)', backgroundPosition: 'center 30%' }}
+            />
+            {/* Blue overlay at 90% opacity */}
+            <div className="absolute inset-0 bg-brand-blue opacity-90" />
             <div className="max-w-3xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
                <h2 className="text-3xl md:text-5xl font-serif font-bold text-white mb-6">
                   Prepoznaješ sebe u ovome?
@@ -268,6 +277,211 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             </div>
          </section>
 
+         {/* 8. FAQs - Two Boxes */}
+         <div id="faq" className="pt-24 pb-12 bg-white scroll-mt-24">
+            <div className="max-w-4xl mx-auto px-6">
+               <div className="text-center mb-16">
+                  <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand-dark mb-4">Često Postavljena Pitanja</h2>
+                  <p className="text-gray-500 max-w-2xl mx-auto">Ovdje ćete naći odgovore na najčešća pitanja o HabitPlus programima. Bilo da tražite podršku za sebe ili za vaš tim, ove informacije će vam pomoći da napravite pravi korak.</p>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Fizička Lica Box */}
+                  <div
+                     onClick={() => setActiveFaq('individual')}
+                     className="bg-brand-stone/30 rounded-3xl p-10 cursor-pointer border border-transparent hover:border-brand-teal/20 hover:shadow-lg transition-all group group-hover:bg-brand-stone/50 flex flex-col items-center text-center"
+                  >
+                     <div className="w-20 h-20 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-teal mb-6 group-hover:scale-110 transition-transform">
+                        <User size={40} strokeWidth={1.5} />
+                     </div>
+                     <h3 className="text-2xl font-bold text-brand-dark mb-4">Za fizička lica</h3>
+                     <p className="text-gray-500 mb-8">Pitanja o individualnim programima, radionicama uživo i online podršci za prestanak pušenja.</p>
+                     <button className="text-brand-teal font-bold flex items-center gap-2 mt-auto">
+                        Prikaži pitanja <ArrowRight size={16} />
+                     </button>
+                  </div>
+
+                  {/* Organizacije Box */}
+                  <div
+                     onClick={() => setActiveFaq('corporate')}
+                     className="bg-brand-blue/5 rounded-3xl p-10 cursor-pointer border border-transparent hover:border-brand-blue/20 hover:shadow-lg transition-all group group-hover:bg-brand-blue/10 flex flex-col items-center text-center"
+                  >
+                     <div className="w-20 h-20 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-blue mb-6 group-hover:scale-110 transition-transform">
+                        <Building2 size={40} strokeWidth={1.5} />
+                     </div>
+                     <h3 className="text-2xl font-bold text-brand-dark mb-4">Za organizacije</h3>
+                     <p className="text-gray-500 mb-8">Informacije o korporativnim paketima, benefitima za timove i uslugama za zaposlenike.</p>
+                     <button className="text-brand-blue font-bold flex items-center gap-2 mt-auto">
+                        Prikaži pitanja <ArrowRight size={16} />
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* FAQ Modal */}
+         {activeFaq && (
+            <div
+               className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-brand-dark/60 backdrop-blur-sm"
+               style={{ top: 0, left: 0, right: 0, bottom: 0 }}
+            >
+               <div
+                  className="bg-white rounded-[2rem] w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl animate-fade-in-up relative overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+               >
+                  {/* Modal Header */}
+                  <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                     <div className="flex items-center gap-3">
+                        {activeFaq === 'individual' ? (
+                           <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal"><User size={20} /></div>
+                        ) : (
+                           <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue"><Building2 size={20} /></div>
+                        )}
+                        <h3 className="text-2xl font-serif font-bold text-brand-dark">
+                           {activeFaq === 'individual' ? 'Za Fizička Lica' : 'Za Organizacije i Kompanije'}
+                        </h3>
+                     </div>
+                     <button
+                        onClick={() => setActiveFaq(null)}
+                        className="p-2 bg-gray-50 text-gray-400 hover:text-brand-dark hover:bg-gray-100 rounded-full transition-colors"
+                     >
+                        <X size={24} />
+                     </button>
+                  </div>
+
+                  {/* Modal Body - Scrollable */}
+                  <div className="p-8 overflow-y-auto custom-scrollbar">
+                     <div className="space-y-4">
+                        {(activeFaq === 'individual' ? [
+                           {
+                              q: "1. Zašto bih trebao/la prestati pušiti upravo sada?",
+                              a: "Vaše tijelo počinje da se oporavlja već 20 minuta nakon posljednje cigarete. Svaki dan bez cigarete znači manje oštećenja pluća, srca i krvnih sudova, imaćete više energije, kondicije, bolje ćete disati i imati više novca u džepu. Ne postoji savršen trenutak. Postoji samo odluka."
+                           },
+                           {
+                              q: "2. Koji program je pravi za mene?",
+                              a: (
+                                 <>
+                                    HabitPlus nudi tri opcije prilagođene različitim potrebama i životnim stilovima:
+                                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                                       <li><strong>Individualna podrška</strong> – Diskretna 1:1 podrška s individualnim planom prestanka pušenja, fleksibilnim zakazivanjem i dugoročnim praćenjem. Sesije traju 60 minuta, uživo ili online.</li>
+                                       <li><strong>Intenzivni program</strong> – Dvije radionice po 3 sata s fokusom na strategije za prevazilaženje kriza i izradu plana prestanka. Uživo ili online.</li>
+                                       <li><strong>Program "Novi Početak"</strong> – Najsveobuhvatniji program: 8 strukturiranih sesija (2x sedmično ili po dogovoru), kroz koje prolazite cijeli proces, od razumijevanja navike do izgradnje identiteta nepušača. Uživo ili online.</li>
+                                    </ul>
+                                    <div className="mt-4">
+                                       <button onClick={() => window.open('https://calendly.com', '_blank')} className="font-bold text-brand-blue hover:underline">→ Rezerviši termin</button>
+                                    </div>
+                                 </>
+                              )
+                           },
+                           {
+                              q: "3. Da li program radi i online?",
+                              a: "Da, sve sesije i radionice su dostupne uživo i online, s jednakom efikasnošću. Online format je posebno praktičan za zaposlene, roditelje i sve koji imaju dinamičan raspored. Sesije se odvijaju putem Zoom ili Google Meet platformi."
+                           },
+                           {
+                              q: "4. Šta ako sam već pokušao/la više puta?",
+                              a: (
+                                 <>
+                                    To zapravo govori o vašoj motivaciji, ne o neuspjehu. Istraživanja pokazuju da većina ljudi koji trajno prestanu pušiti prethodno pokušaju više puta.
+                                    <br /><br />
+                                    Razlika u HabitPlus pristupu je u tome što analiziramo vaše prethodne pokušaje, razumijemo šta je nedostajalo i gradimo strategiju prilagođenu upravo vama, uključujući rad na emocijama, navikama i novom identitetu, ne samo na snazi volje.
+                                    <div className="mt-4">
+                                       <button onClick={() => window.open('https://calendly.com', '_blank')} className="font-bold text-brand-blue hover:underline">→ Rezerviši termin</button>
+                                    </div>
+                                 </>
+                              )
+                           },
+                           {
+                              q: "5. Kako da se nosim sa željom za cigaretom?",
+                              a: "Žudnja za cigaretom traje svega 3–5 minuta i prolazi sama, bez obzira da li zapalite cigaretu ili ne. Jedna od tehnika koja funkcioniše je tzv. \"4D\" pristup: odgodite, dišite duboko, popijte čašu vode i zaokupirajte ruke nečim drugim. U programu razvijamo individualne strategije za vaše konkretne situacije i okidače."
+                           },
+                           {
+                              q: "6. Da li radite i s korisnicima vape uređaja, e-cigareta i nesagorijevajućeg duhana?",
+                              a: "Da. HabitPlus programi su namijenjeni svim korisnicima nikotinskih proizvoda, klasičnih cigareta, vape uređaja, e-cigareta i nesagorijevajućeg duhana (HTPs), kao i kombinacija.\n\nVažno je znati: ovi proizvodi nisu bezopasna alternativa. Nikotinska ovisnost ostaje jednaka ili jača, a zbog dostupnosti i diskretnosti u upotrebi, mnogi ih konzumiraju mnogo češće."
+                           },
+                           {
+                              q: "7. Koliko košta program?",
+                              a: (
+                                 <>
+                                    Cijena ovisi o vrsti podrške koju odaberete. Za detalje o cijenama i dostupnim terminima, slobodno nas kontaktirajte.
+                                    <div className="mt-4">
+                                       <a href="#contact" onClick={(e) => { e.preventDefault(); setActiveFaq(null); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Kontaktirajte nas</a>
+                                    </div>
+                                 </>
+                              )
+                           }
+                        ] : [
+                           {
+                              q: "8. Zašto bi moja kompanija trebala investirati u program prestanka pušenja?",
+                              a: "Pušenje zaposlenika direktno utiče na produktivnost i troškove. Pušači provedu i do 2–3 sedmice godišnje na pauzama za cigarete, češće su odsutni zbog bolesti, a zdravstveni rizici rastu s godinama. Programi zdravlja nisu trošak, oni su investicija s mjerljivim povratom: manje bolovanja, veći fokus na poslu i jača lojalnost. Pozicionira vas kao poslodavca koji brine o ljudima."
+                           },
+                           {
+                              q: "9. Koje opcije nudite za organizacije?",
+                              a: (
+                                 <>
+                                    Organizacijama nudimo prilagođene programe u tri formata:
+                                    <ul className="list-disc pl-5 mt-2 space-y-1">
+                                       <li><strong>Edukativni seminar</strong> – Jednokratna interaktivna radionica (1,5h, uživo ili online) o rizicima pušenja, fazama odvikavanja i prvim koracima. Idealan uvod za timove.</li>
+                                       <li><strong>Intenzivni program</strong> – Dvije radionice (2 x 3h) s psihološkim pristupom ovisnosti, praktičnim alatima i grupnom podrškom.</li>
+                                       <li><strong>Program "Novi Početak"</strong> – Najdetaljniji program (8 x 1h) s individualnim planovima, prevencijom relapsa, upravljanjem stresom i izgradnjom identiteta nepušača.</li>
+                                       <li><strong>Individualna podrška za zaposlenike</strong> – Diskretne 1:1 sesije za zaposlenike koji žele privatnu podršku.</li>
+                                    </ul>
+                                    <div className="mt-4">
+                                       <a href="#contact" onClick={(e) => { e.preventDefault(); setActiveFaq(null); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Zatražite ponudu</a>
+                                    </div>
+                                 </>
+                              )
+                           },
+                           {
+                              q: "10. Kako izgleda proces saradnje?",
+                              a: (
+                                 <>
+                                    Saradnja počinje inicijalnim razgovorom u kojem zajedno procjenjujemo potrebe vašeg tima. Nakon toga kreiramo prilagođen program, dogovaramo termine i format (uživo, online ili kombinovano), a tokom i nakon programa pratimo napredak i pružamo kontinuiranu podršku.
+                                    <div className="mt-4">
+                                       <a href="#contact" onClick={(e) => { e.preventDefault(); setActiveFaq(null); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Dogovorite inicijalni razgovor</a>
+                                    </div>
+                                 </>
+                              )
+                           },
+                           {
+                              q: "11. Da li pružate izvještaj o rezultatima?",
+                              a: "Da. Transparentnost je dio naše usluge. Na kraju programa dobijate finalni izvještaj s pregledom napretka učesnika, a dodatna evaluacija se radi nakon 3 i 6 mjeseci. Svi podaci su povjerljivi."
+                           },
+                           {
+                              q: "12. Šta ako samo nekoliko zaposlenika želi učestvovati?",
+                              a: "Nema prepreke. Rad s manjom grupom ili pojedinačnim učesnicima je jednako efikasan. Nudimo individualne sesije u okviru korporativnog paketa, male grupne radionice i kombinovane formate. Iskustvo pokazuje da uspjeh prvih učesnika često motiviše i kolege da se pridruže."
+                           },
+                           {
+                              q: "13. Kako motivisati zaposlenike da učestvuju?",
+                              a: (
+                                 <>
+                                    Pristup je ključan: program predstavite kao beneficiju, a ne obavezu. Naglasak na zdravstvenim koristima, podrška menadžmenta i garantovana diskrecija značajno povećavaju odaziv. Mogu vam pomoći i u pripremi interne komunikacije za predstavljanje programa.
+                                    <div className="mt-4">
+                                       <a href="#contact" onClick={(e) => { e.preventDefault(); setActiveFaq(null); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Kontaktirajte nas</a>
+                                    </div>
+                                 </>
+                              )
+                           }
+                        ]).map((faq, i) => (
+                           <details key={i} className={`group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer ${activeFaq === 'individual' ? 'open:bg-brand-stone/10' : 'open:bg-brand-blue/5'}`}>
+                              <summary className="font-bold text-brand-dark flex justify-between items-center outline-none">
+                                 <span className="pr-4">{faq.q}</span>
+                                 <ChevronDown size={20} className={`${activeFaq === 'individual' ? 'text-brand-teal' : 'text-brand-blue'} group-open:rotate-180 transition-transform shrink-0`} />
+                              </summary>
+                              <div className="mt-4 text-gray-600 leading-relaxed text-[15px] whitespace-pre-wrap">
+                                 {faq.a}
+                              </div>
+                           </details>
+                        ))}
+                     </div>
+                  </div>
+               </div>
+
+               {/* Click outside to close (handled by wrapping outer div implicitly by making modal inner content stopPropagation, but doing this explicit click handler layer helps too) */}
+               <div className="absolute inset-0 -z-10" onClick={() => setActiveFaq(null)} />
+            </div>
+         )}
+
+
          {/* 8. NEWSLETTER */}
          <section className="py-24 bg-white">
             <div className="max-w-7xl mx-auto px-6 md:px-8">
@@ -291,167 +505,6 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                </div>
             </div>
          </section>
-
-         {/* 8. FAQs */}
-         <div id="faq" className="mt-24 bg-white scroll-mt-24">
-            <div className="max-w-4xl mx-auto">
-               <div className="text-center mb-16">
-                  <h2 className="text-3xl md:text-5xl font-serif font-bold text-brand-dark mb-4">Često Postavljena Pitanja</h2>
-                  <p className="text-gray-500">Ovdje ćete naći odgovore na najčešća pitanja o HabitPlus programima. Bilo da tražite podršku za sebe ili za vaš tim, ove informacije će vam pomoći da napravite pravi korak.</p>
-               </div>
-
-               <div className="space-y-12">
-                  {/* Fizička lica */}
-                  <div>
-                     <h3 className="text-xl font-bold text-brand-teal mb-6 flex items-center gap-2">
-                        <User size={20} /> ZA FIZIČKA LICA
-                     </h3>
-                     <div className="space-y-4">
-                        {[
-                           {
-                              q: "1. Zašto bih trebao/la prestati pušiti upravo sada?",
-                              a: "Vaše tijelo počinje da se oporavlja već 20 minuta nakon posljednje cigarete. Svaki dan bez cigarete znači manje oštećenja pluća, srca i krvnih sudova, imaćete više energije, kondicije, bolje ćete disati i imati više novca u džepu. Ne postoji savršen trenutak. Postoji samo odluka."
-                           },
-                           {
-                              q: "2. Koji program je pravi za mene?",
-                              a: (
-                                 <>
-                                    HabitPlus nudi tri opcije prilagođene različitim potrebama i životnim stilovima:
-                                    <ul className="list-disc pl-5 mt-2 space-y-1">
-                                       <li><strong>Individualna podrška</strong> – Diskretna 1:1 podrška s individualnim planom prestanka pušenja, fleksibilnim zakazivanjem i dugoročnim praćenjem. Sesije traju 60 minuta, uživo ili online.</li>
-                                       <li><strong>Intenzivni program</strong> – Dvije radionice po 3 sata s fokusom na strategije za prevazilaženje kriza i izradu plana prestanka. Uživo ili online.</li>
-                                       <li><strong>Program \"Novi Početak\"</strong> – Najsveobuhvatniji program: 8 strukturiranih sesija (2x sedmično ili po dogovoru), kroz koje prolazite cijeli proces, od razumijevanja navike do izgradnje identiteta nepušača. Uživo ili online.</li>
-                                    </ul>
-                                    <div className="mt-3">
-                                       <button onClick={() => window.open('https://calendly.com', '_blank')} className="font-bold text-brand-blue hover:underline">→ Rezerviši termin</button>
-                                    </div>
-                                 </>
-                              )
-                           },
-                           {
-                              q: "3. Da li program radi i online?",
-                              a: "Da, sve sesije i radionice dostupne su uživo i online, s jednakom efikasnošću. Online format je posebno praktičan za zaposlene, roditelje i sve koji imaju dinamičan raspored. Sesije se odvijaju putem Zoom ili Google Meet platformi."
-                           },
-                           {
-                              q: "4. Šta ako sam već pokušao/la više puta?",
-                              a: (
-                                 <>
-                                    To zapravo govori o vašoj motivaciji, ne o neuspjehu. Istraživanja pokazuju da većina ljudi koji trajno prestanu pušiti prethodno pokušaju više puta.
-                                    <br /><br />
-                                    Razlika u HabitPlus pristupu je u tome što analiziramo vaše prethodne pokušaje, razumijemo šta je nedostajalo i gradimo strategiju prilagođenu upravo vama, uključujući rad na emocijama, navikama i novom identitetu, ne samo na snazi volje.
-                                    <div className="mt-3">
-                                       <button onClick={() => window.open('https://calendly.com', '_blank')} className="font-bold text-brand-blue hover:underline">→ Rezerviši termin</button>
-                                    </div>
-                                 </>
-                              )
-                           },
-                           {
-                              q: "5. Kako da se nosim sa željom za cigaretom?",
-                              a: "Žudnja za cigaretom traje svega 3–5 minuta i prolazi sama, bez obzira da li zapalite cigaretu ili ne. Jedna od tehnika koja funkcioniše je tzv. \"4D\" pristup: odgodite, dišite duboko, popijte čašu vode i zaokupite ruke nečim drugim. U programu razvijamo individualne strategije za vaše konkretne situacije i okidače."
-                           },
-                           {
-                              q: "6. Da li radite i s korisnicima vapea, e-cigareta i nesagorijevajućeg duhana?",
-                              a: "Da. HabitPlus programi namijenjeni su svim korisnicima nikotinskih proizvoda, klasičnih cigareta, vapea, e-cigareta i nesagorijevajućeg duhana (HTPs), kao i kombinacija.\n\nVažno je znati: ovi proizvodi nisu bezopasna alternativa. Nikotinska ovisnost ostaje jednaka ili jača, a zbog dostupnosti i diskretnosti u upotrebi, mnogi ih konzumiraju mnogo češće."
-                           },
-                           {
-                              q: "7. Koliko košta program?",
-                              a: (
-                                 <>
-                                    Cijena ovisi o vrsti podrške koju odaberete. Za detalje o cijenama i dostupnim terminima, slobodno nas kontaktirajte.
-                                    <div className="mt-3">
-                                       <a href="#contact" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Kontaktirajte nas</a>
-                                    </div>
-                                 </>
-                              )
-                           }
-                        ].map((faq, i) => (
-                           <details key={i} className="group bg-brand-stone/30 rounded-2xl p-6 hover:bg-brand-stone/50 transition-colors cursor-pointer open:bg-brand-stone/50 open:shadow-sm">
-                              <summary className="font-bold text-brand-dark flex justify-between items-center outline-none">
-                                 <span className="pr-4">{faq.q}</span>
-                                 <ChevronDown size={20} className="text-brand-blue group-open:rotate-180 transition-transform shrink-0" />
-                              </summary>
-                              <div className="mt-4 text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
-                                 {faq.a}
-                              </div>
-                           </details>
-                        ))}
-                     </div>
-                  </div>
-
-                  {/* Organizacije */}
-                  <div>
-                     <h3 className="text-xl font-bold text-brand-blue mb-6 flex items-center gap-2 mt-12">
-                        <Building2 size={20} /> ZA ORGANIZACIJE I KOMPANIJE
-                     </h3>
-                     <div className="space-y-4">
-                        {[
-                           {
-                              q: "8. Zašto bi moja kompanija trebala investirati u program prestanka pušenja?",
-                              a: "Pušenje zaposlenika direktno utiče na produktivnost i troškove. Pušači provedu i do 2–3 sedmice godišnje na pauzama za cigarete, češće su odsutni zbog bolesti, a zdravstveni rizici rastu s godinama. Programi zdravlja nisu trošak, oni su investicija s mjerljivim povratom: manje bolovanja, veći fokus na poslu i jača reputacija poslodavca koji brine o ljudima."
-                           },
-                           {
-                              q: "9. Koje opcije nudite za organizacije?",
-                              a: (
-                                 <>
-                                    Organizacijama nudimo prilagođene programe u tri formata:
-                                    <ul className="list-disc pl-5 mt-2 space-y-1">
-                                       <li><strong>Edukativni seminar</strong> – Jednokratna interaktivna radionica (1,5h, uživo ili online) o rizicima pušenja, fazama odvikavanja i prvim koracima. Idealan uvod za timove.</li>
-                                       <li><strong>Intenzivni program</strong> – Dvije radionice (2 x 3h) s psihološkim pristupom ovisnosti, praktičnim alatima i grupnom podrškom.</li>
-                                       <li><strong>Program \"Novi Početak\"</strong> – Najdetaljniji program (8 x 1h) s individualnim planovima, prevencijom relapsa, upravljanjem stresom i izgradnjom identiteta nepušača.</li>
-                                       <li><strong>Individualna podrška za zaposlenike</strong> – Diskretne 1:1 sesije za zaposlenike koji žele privatnu podršku.</li>
-                                    </ul>
-                                    <div className="mt-3">
-                                       <a href="#contact" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Zatražite ponudu</a>
-                                    </div>
-                                 </>
-                              )
-                           },
-                           {
-                              q: "10. Kako izgleda proces saradnje?",
-                              a: (
-                                 <>
-                                    Saradnja počinje inicijalnim razgovorom u kojem zajedno procjenjujemo potrebe vašeg tima. Nakon toga kreiramo prilagođen program, dogovaramo termine i format (uživo, online ili kombinovano), a tokom i nakon programa pratimo napredak i pružamo kontinuiranu podršku.
-                                    <div className="mt-3">
-                                       <a href="#contact" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Dogovorite inicijalni razgovor</a>
-                                    </div>
-                                 </>
-                              )
-                           },
-                           {
-                              q: "11. Da li pružate izvještaj o rezultatima?",
-                              a: "Da. Transparentnost je dio naše usluge. Na kraju programa dobijate finalni izvještaj s pregledom napretka učesnika, a dodatna evaluacija se radi nakon 3 i 6 mjeseci. Svi podaci su povjerljivi."
-                           },
-                           {
-                              q: "12. Šta ako samo nekoliko zaposlenika želi učestvovati?",
-                              a: "Nema prepreke. Rad s manjom grupom ili pojedinačnim učesnicima je jednako efikasan. Nudimo individualne sesije u okviru korporativnog paketa, male grupne radionice i kombinovane formate. Iskustvo pokazuje da uspjeh prvih učesnika često motiviše i kolege da se pridruže."
-                           },
-                           {
-                              q: "13. Kako motivisati zaposlenike da učestvuju?",
-                              a: (
-                                 <>
-                                    Pristup je ključan: program prezentujte kao beneficiju, a ne obavezu. Naglasak na zdravstvenim koristima, podrška menadžmenta i garantovana diskrecija značajno povećavaju odaziv. Mogu vam pomoći i u pripremi interne komunikacije za predstavljanje programa.
-                                    <div className="mt-3">
-                                       <a href="#contact" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) }} className="font-bold text-brand-blue hover:underline">→ Kontaktirajte nas</a>
-                                    </div>
-                                 </>
-                              )
-                           }
-                        ].map((faq, i) => (
-                           <details key={i} className="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer open:bg-brand-stone/10">
-                              <summary className="font-bold text-brand-dark flex justify-between items-center outline-none">
-                                 <span className="pr-4">{faq.q}</span>
-                                 <ChevronDown size={20} className="text-brand-blue group-open:rotate-180 transition-transform shrink-0" />
-                              </summary>
-                              <div className="mt-4 text-gray-600 leading-relaxed text-sm whitespace-pre-wrap">
-                                 {faq.a}
-                              </div>
-                           </details>
-                        ))}
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
 
          {/* 9. BOTTOM CTA - Minimalist */}
          <section className="py-24 bg-brand-cream border-t border-gray-200">
