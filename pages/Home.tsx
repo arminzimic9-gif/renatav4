@@ -22,6 +22,19 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       return () => clearTimeout(timer);
    }, []);
 
+   // Prevent body scroll when modal is open
+   useEffect(() => {
+      if (activeFaq) {
+         document.body.style.overflow = 'hidden';
+      } else {
+         document.body.style.overflow = 'unset';
+      }
+      return () => {
+         document.body.style.overflow = 'unset';
+      };
+   }, [activeFaq]);
+
+
 
 
    return (
