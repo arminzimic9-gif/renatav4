@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- ===== Bosanski (BHS) rute ===== -->
+
+  <!-- Početna stranica -->
+  <url>
+    <loc>https://habitplus.ba/</loc>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/home"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Da li je ovo za vas -->
+  <url>
+    <loc>https://habitplus.ba/da-li-je-ovo-za-vas</loc>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/da-li-je-ovo-za-vas"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/is-this-for-you"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Usluge -->
+  <url>
+    <loc>https://habitplus.ba/usluge</loc>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/usluge"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/services"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Za organizacije (Tim bilding / Korporativni programi) -->
+  <url>
+    <loc>https://habitplus.ba/za-organizacije</loc>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/za-organizacije"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/for-organisations"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- O nama -->
+  <url>
+    <loc>https://habitplus.ba/onama</loc>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/onama"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/about-us"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Kontakt -->
+  <url>
+    <loc>https://habitplus.ba/kontakt</loc>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/kontakt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/contact"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Politika privatnosti -->
+  <url>
+    <loc>https://habitplus.ba/politika-privatnosti</loc>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/politika-privatnosti"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/privacy-policy"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- ===== Engleske (EN) rute ===== -->
+
+  <url>
+    <loc>https://habitplus.ba/home</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/home"/>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://habitplus.ba/is-this-for-you</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/is-this-for-you"/>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/da-li-je-ovo-za-vas"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://habitplus.ba/services</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/services"/>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/usluge"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://habitplus.ba/for-organisations</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/for-organisations"/>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/za-organizacije"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://habitplus.ba/about-us</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/about-us"/>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/onama"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://habitplus.ba/contact</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/contact"/>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/kontakt"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://habitplus.ba/privacy-policy</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://habitplus.ba/privacy-policy"/>
+    <xhtml:link rel="alternate" hreflang="bs" href="https://habitplus.ba/politika-privatnosti"/>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>

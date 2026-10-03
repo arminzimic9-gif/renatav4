@@ -1,99 +1,315 @@
 import React, { useState } from 'react';
-import { Calculator, DollarSign, Clock, RefreshCw } from 'lucide-react';
+import { Calculator, DollarSign, Clock, Minus, Plus, Gamepad2, Check } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+
+type ProductKey = 'cigarettes' | 'snus' | 'vape';
+
+const StepInput: React.FC<{
+  value: number;
+  onChange: (val: number) => void;
+  min?: number;
+  max?: number;
+  step?: number;
+  unit: string;
+}> = ({ value, onChange, min = 0, max = 9999, step = 1, unit }) => {
+  const decrement = () => onChange(Math.max(min, value - step));
+  const increment = () => onChange(Math.min(max, value + step));
+
+  return (
+    <div className="flex items-center gap-0 bg-brand-stone border border-gray-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-brand-blue focus-within:border-brand-blue transition-all">
+      <button type="button" onClick={decrement} className="px-4 py-4 text-gray-400 hover:text-brand-blue hover:bg-gray-100 transition-colors shrink-0 active:scale-95">
+        <Minus size={16} strokeWidth={2.5} />
+      </button>
+      <div className="flex-1 flex items-center justify-center gap-2 py-4 min-w-0">
+        <span className="font-semibold text-brand-dark text-lg tabular-nums">{value}</span>
+        <span className="text-gray-400 text-sm font-medium">{unit}</span>
+      </div>
+      <button type="button" onClick={increment} className="px-4 py-4 text-gray-400 hover:text-brand-blue hover:bg-gray-100 transition-colors shrink-0 active:scale-95">
+        <Plus size={16} strokeWidth={2.5} />
+      </button>
+    </div>
+  );
+};
 
 export const SavingsCalculator: React.FC = () => {
-  const [cigsPerDay, setCigsPerDay] = useState<number>(20);
-  const [pricePerPack, setPricePerPack] = useState<number>(6); // BAM default approx
-  const [years, setYears] = useState<number>(1);
+  // Multi-select: which products are active
+  const [selected, setSelected] = useState<Set<ProductKey>>(new Set(['cigarettes']));
 
-  const calculateSavings = () => {
-    const packsPerDay = cigsPerDay / 20;
-    const costPerDay = packsPerDay * pricePerPack;
-    const total = costPerDay * 365 * years;
+  // Cigarette inputs
+  const [cigsPerDay, setCigsPerDay] = useState<number>(20);
+  const [pricePerPack, setPricePerPack] = useState<number>(6);
+
+  // Snus inputs
+  const [snusPerDay, setSnusPerDay] = useState<number>(5);
+  const [pricePerSnusCan, setPricePerSnusCan] = useState<number>(8);
+
+  // Vape inputs
+  const [vapePodPerWeek, setVapePodPerWeek] = useState<number>(2);
+  const [vapePodPrice, setVapePodPrice] = useState<number>(15);
+
+  const [years, setYears] = useState<number>(1);
+  const { lang, dict } = useLanguage();
+  const t = dict[lang].savingsCalculator;
+  const isBHS = lang === 'BHS';
+
+  const toggleProduct = (key: ProductKey) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) {
+        // Don't allow deselecting the last one
+        if (next.size === 1) return prev;
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      return next;
+    });
+  };
+
+  const calculateSavingsRaw = (): number => {
+    let total = 0;
+    if (selected.has('cigarettes')) {
+      const packsPerDay = cigsPerDay / 20;
+      total += packsPerDay * pricePerPack * 365 * years;
+    }
+    if (selected.has('snus')) {
+      const cansPerDay = snusPerDay / 20;
+      total += cansPerDay * pricePerSnusCan * 365 * years;
+    }
+    if (selected.has('vape')) {
+      total += vapePodPerWeek * vapePodPrice * 52 * years;
+    }
+    return total;
+  };
+
+  const calculateSavings = (): string => {
+    const total = calculateSavingsRaw();
+    if (lang === 'EN') {
+      return total.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
     return total.toLocaleString('bs-BA', { style: 'currency', currency: 'BAM' });
   };
 
   const calculateTimeGained = () => {
-    // Approx 11 mins life lost per cigarette
-    const minsLost = cigsPerDay * 11 * 365 * years;
-    const daysGained = Math.round(minsLost / (60 * 24));
-    return daysGained;
+    let totalMinsLost = 0;
+    if (selected.has('cigarettes')) totalMinsLost += cigsPerDay * 11 * 365 * years;
+    if (selected.has('snus')) totalMinsLost += snusPerDay * 11 * 365 * years;
+    // Vape: approx 1 pod/day = 20 min lost per day (each session ~5 min, ~4 sessions/day per pod)
+    if (selected.has('vape')) {
+      const vapePerDay = vapePodPerWeek / 7;
+      totalMinsLost += vapePerDay * 20 * 365 * years;
+    }
+    return Math.round(totalMinsLost / (60 * 24));
   };
 
+  const openCravingMode = () => {
+    window.dispatchEvent(new Event('open-craving-mode'));
+  };
+
+  const products: { key: ProductKey; label: string }[] = [
+    { key: 'cigarettes', label: isBHS ? 'Cigarete' : 'Cigarettes' },
+    { key: 'snus',       label: 'Snus' },
+    { key: 'vape',       label: 'Vape' },
+  ];
+
   return (
-    <div className="bg-white rounded-[2.5rem] shadow-premium p-8 md:p-10 border border-brand-blue/10 max-w-3xl mx-auto relative overflow-hidden">
-       {/* Background decoration */}
-      <div className="absolute -top-20 -right-20 w-64 h-64 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="bg-white rounded-[2.5rem] shadow-[0_8px_40px_-8px_rgba(0,0,0,0.10)] p-8 md:p-10 border border-brand-blue/10 max-w-3xl mx-auto relative overflow-hidden">
+      {/* Background blobs */}
+      <div className="absolute -top-16 -right-16 w-56 h-56 bg-brand-teal/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 -left-16 w-48 h-48 bg-brand-blue/5 rounded-full blur-3xl pointer-events-none" />
 
+      {/* Header */}
       <div className="flex items-center gap-4 mb-8 relative z-10">
-        <div className="p-4 bg-brand-blue/10 rounded-2xl text-brand-blue">
-          <Calculator size={32} />
+        <div className="p-3.5 bg-brand-blue/10 rounded-2xl text-brand-blue shrink-0">
+          <Calculator size={28} />
         </div>
         <div>
-           <h3 className="text-2xl font-bold text-brand-dark font-serif">Kalkulator Uštede</h3>
-           <p className="text-gray-500">Investiraj u sebe, ne u dim.</p>
+          <h3 className="font-bold text-brand-dark text-lg">{t.title}</h3>
+          <p className="text-gray-400 text-sm">{t.subtitle}</p>
         </div>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 relative z-10">
+
+      <div className="space-y-6 relative z-10">
+
+        {/* Multi-select product toggle */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-3">Cigareta dnevno</label>
-          <div className="relative">
-             <input 
-               type="number" 
-               value={cigsPerDay}
-               onChange={(e) => setCigsPerDay(Number(e.target.value))}
-               className="w-full px-5 py-4 rounded-xl bg-brand-stone border border-gray-200 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-all font-semibold text-brand-dark"
-             />
-             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">kom</span>
+          <label className="block text-sm font-bold text-gray-600 mb-3">
+            {isBHS ? 'Šta koristiš? (možeš odabrati više)' : 'What do you use? (select all that apply)'}
+          </label>
+          <div className="flex gap-2 flex-wrap">
+            {products.map(({ key, label }) => {
+              const isActive = selected.has(key);
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => toggleProduct(key)}
+                  className={`flex items-center gap-2 flex-1 min-w-[90px] px-3 py-2.5 rounded-xl text-sm font-bold border-2 transition-all ${
+                    isActive
+                      ? 'bg-gray-600 text-white border-gray-600 shadow-md'
+                      : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+                  }`}
+                >
+                  <span className={`w-4 h-4 rounded flex items-center justify-center shrink-0 border-2 transition-all ${
+                    isActive ? 'bg-white border-white' : 'border-gray-300'
+                  }`}>
+                    {isActive && <Check size={10} className="text-gray-600" strokeWidth={3} />}
+                  </span>
+                  <span>{label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
+
+        {/* Cigarettes inputs */}
+        {selected.has('cigarettes') && (
+          <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+            <p className="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3">
+              {isBHS ? 'Cigarete' : 'Cigarettes'}
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col h-full">
+                <label className="block text-sm font-bold text-gray-600 mb-2">
+                  {isBHS ? 'Cigareta na dan' : 'Cigarettes per day'}
+                </label>
+                <div className="mt-auto">
+                  <StepInput value={cigsPerDay} onChange={setCigsPerDay} min={1} max={100} unit={isBHS ? 'kom' : 'pcs'} />
+                </div>
+              </div>
+              <div className="flex flex-col h-full">
+                <label className="block text-sm font-bold text-gray-600 mb-2">
+                  {isBHS ? 'Cijena kutije' : 'Price per pack'}
+                </label>
+                <div className="mt-auto">
+                  <StepInput value={pricePerPack} onChange={setPricePerPack} min={1} max={50} unit={isBHS ? 'KM' : '$'} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Snus inputs */}
+        {selected.has('snus') && (
+          <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+            <p className="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3">
+              Snus
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col h-full">
+                <label className="block text-sm font-bold text-gray-600 mb-2">
+                  {isBHS ? 'Kesica na dan' : 'Pouches per day'}
+                </label>
+                <div className="mt-auto">
+                  <StepInput value={snusPerDay} onChange={setSnusPerDay} min={1} max={100} unit={isBHS ? 'kom' : 'pcs'} />
+                </div>
+              </div>
+              <div className="flex flex-col h-full">
+                <label className="block text-sm font-bold text-gray-600 mb-2">
+                  {isBHS ? 'Cijena kutije snusa' : 'Price per can'}
+                </label>
+                <div className="mt-auto">
+                  <StepInput value={pricePerSnusCan} onChange={setPricePerSnusCan} min={1} max={50} unit={isBHS ? 'KM' : '$'} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Vape inputs */}
+        {selected.has('vape') && (
+          <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+            <p className="text-xs font-bold uppercase tracking-widest text-brand-blue mb-3">
+              Vape
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col h-full">
+                <label className="block text-sm font-bold text-gray-600 mb-2">
+                  {isBHS ? 'Punjenja sedmično' : 'Pods per week'}
+                </label>
+                <div className="mt-auto">
+                  <StepInput value={vapePodPerWeek} onChange={setVapePodPerWeek} min={1} max={30} unit={isBHS ? 'kom' : 'pcs'} />
+                </div>
+              </div>
+              <div className="flex flex-col h-full">
+                <label className="block text-sm font-bold text-gray-600 mb-2">
+                  {isBHS ? 'Cijena punjenja' : 'Price per pod'}
+                </label>
+                <div className="mt-auto">
+                  <StepInput value={vapePodPrice} onChange={setVapePodPrice} min={1} max={100} unit={isBHS ? 'KM' : '$'} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Time period slider */}
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-3">Cijena kutije (KM)</label>
-          <div className="relative">
-             <input 
-               type="number" 
-               value={pricePerPack}
-               onChange={(e) => setPricePerPack(Number(e.target.value))}
-               className="w-full px-5 py-4 rounded-xl bg-brand-stone border border-gray-200 focus:ring-2 focus:ring-brand-blue focus:border-brand-blue outline-none transition-all font-semibold text-brand-dark"
-             />
-             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm">BAM</span>
+          <div className="flex justify-between items-center mb-3">
+            <label className="text-sm font-bold text-gray-600">{t.periodLabel}</label>
+            <span className="text-sm font-bold text-brand-blue bg-brand-blue/10 px-3 py-1 rounded-full">
+              {years} {t.yearsSuffix}
+            </span>
           </div>
-        </div>
-        <div className="md:col-span-2">
-          <div className="flex justify-between mb-3">
-             <label className="block text-sm font-bold text-gray-700">Vremenski period</label>
-             <span className="text-sm font-bold text-brand-blue">{years} godina/e</span>
-          </div>
-          <input 
-            type="range" 
-            min="1" 
-            max="20" 
-            value={years}
+          <input
+            type="range" min="1" max="20" value={years}
             onChange={(e) => setYears(Number(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-brand-blue hover:accent-brand-teal transition-all"
+            className="w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer accent-brand-blue"
           />
+          <div className="flex justify-between text-xs text-gray-400 mt-1.5 font-medium">
+            <span>1</span><span>10</span><span>20</span>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
-        <div className="bg-brand-blue text-white rounded-3xl p-6 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full transition-transform group-hover:scale-110"></div>
-          <div className="flex items-center gap-3 mb-2 opacity-90">
-             <DollarSign size={20} />
-             <span className="text-sm font-medium uppercase tracking-wider">Finansijska ušteda</span>
+      {/* Results */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 mb-6 relative z-10">
+        <div className="bg-brand-blue text-white rounded-2xl p-6 relative overflow-hidden group">
+          <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-white/10 rounded-full transition-transform group-hover:scale-150 duration-500" />
+          <div className="flex items-center gap-2 mb-2 opacity-80">
+            <DollarSign size={16} />
+            <span className="text-xs font-bold uppercase tracking-widest">{t.financialSavings}</span>
           </div>
-          <p className="text-3xl font-serif font-bold">{calculateSavings()}</p>
+          <p className="text-2xl md:text-3xl font-serif font-bold leading-tight">{calculateSavings()}</p>
         </div>
 
-        <div className="bg-brand-teal text-white rounded-3xl p-6 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full transition-transform group-hover:scale-110"></div>
-          <div className="flex items-center gap-3 mb-2 opacity-90">
-             <Clock size={20} />
-             <span className="text-sm font-medium uppercase tracking-wider">Dobijeno vrijeme</span>
+        <div className="bg-white border border-gray-100 text-brand-blue rounded-2xl p-6 relative overflow-hidden group shadow-sm">
+          <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-brand-blue/5 rounded-full transition-transform group-hover:scale-150 duration-500" />
+          <div className="flex items-center gap-2 mb-2">
+            <Clock size={16} className="text-brand-blue" />
+            <span className="text-xs font-bold uppercase tracking-widest text-brand-blue opacity-80">{t.timeGained}</span>
           </div>
-          <p className="text-3xl font-serif font-bold">+{calculateTimeGained()} dana</p>
+          <p className="text-2xl md:text-3xl font-serif font-bold leading-tight text-brand-dark">
+            +{calculateTimeGained()} {t.daysSuffix}
+          </p>
         </div>
+      </div>
+
+      {/* CravingMode promo button */}
+      <div className="relative z-10 border-t border-gray-100 pt-6 mt-2">
+        <button
+          onClick={openCravingMode}
+          className="w-full flex items-center justify-between gap-4 bg-brand-blue text-white rounded-2xl px-6 py-4 hover:bg-brand-blue/90 active:scale-[0.98] transition-all"
+        >
+          <div className="flex items-center gap-3 text-left">
+            <div className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center shrink-0">
+              <Gamepad2 size={20} />
+            </div>
+            <div>
+              <p className="font-bold text-sm leading-tight text-white">
+                {isBHS ? 'Isprobaj interaktivne igre' : 'Try the interactive games'}
+              </p>
+              <p className="text-white/60 text-xs mt-0.5">
+                {isBHS ? 'Žudnja prolazi za 3–5 minuta. Pomozi sebi.' : 'Cravings pass in 3–5 minutes. Help yourself.'}
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 w-8 h-8 bg-white/10 rounded-full flex items-center justify-center">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"/>
+            </svg>
+          </div>
+        </button>
       </div>
     </div>
   );

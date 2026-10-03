@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "habitplus",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "/Users/arminzimic/Desktop/habitplus_v22_backup",
+      "port": 3002
+    }
+  ]
+}

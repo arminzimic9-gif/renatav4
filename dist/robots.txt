@@ -1,0 +1,27 @@
+# HabitPlus robots.txt
+# Generisano: 2026-04-09
+
+# Dozvoli svim search engineima pristup svim stranicama
+User-agent: *
+Allow: /
+
+# Blokiraj pristup internim/tehničkim folderima
+Disallow: /api/
+Disallow: /.firebase/
+Disallow: /functions/
+Disallow: /node_modules/
+
+# Sitemap lokacija
+Sitemap: https://habitplus.ba/sitemap.xml
+
+# Specifična pravila za Google
+User-agent: Googlebot
+Allow: /
+
+# Specifična pravila za Bing
+User-agent: Bingbot
+Allow: /
+
+# Specifična pravila za Yandex
+User-agent: Yandex
+Allow: /

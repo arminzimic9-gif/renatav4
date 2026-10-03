@@ -1,0 +1,128 @@
+{
+  "artboards": [
+    {
+      "file": "BentoA.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "BentoB.dc.html",
+      "x": 1240,
+      "y": 0,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "BentoC.dc.html",
+      "x": 2480,
+      "y": 0,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 1620,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Sadrzaj.dc.html",
+      "x": 1240,
+      "y": 1620,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "ZaKoga.dc.html",
+      "x": 2480,
+      "y": 1620,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Programi.dc.html",
+      "x": 3720,
+      "y": 1620,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Roadmap.dc.html",
+      "x": 0,
+      "y": 3240,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Statistika.dc.html",
+      "x": 1240,
+      "y": 3240,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Proces.dc.html",
+      "x": 2480,
+      "y": 3240,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "ZastoSada.dc.html",
+      "x": 3720,
+      "y": 3240,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Ciljevi.dc.html",
+      "x": 0,
+      "y": 4860,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Okidaci.dc.html",
+      "x": 1240,
+      "y": 4860,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Citat.dc.html",
+      "x": 2480,
+      "y": 4860,
+      "w": 1080,
+      "h": 1350
+    },
+    {
+      "file": "Poziv.dc.html",
+      "x": 3720,
+      "y": 4860,
+      "w": 1080,
+      "h": 1350
+    }
+  ],
+  "annotations": [
+    {
+      "id": "set-novo",
+      "x": -470,
+      "y": 0,
+      "w": 350,
+      "text": "NOVE 3 OBJAVE\nKrugovi, pilule i bento kartice — u brend bojama"
+    },
+    {
+      "id": "set-deck",
+      "x": -470,
+      "y": 1620,
+      "w": 350,
+      "text": "RANIJA VERZIJA\nPrezentacijski stil, 12 objava"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}
