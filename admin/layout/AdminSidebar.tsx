@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, PenSquare, Settings, ChevronDown,
-  ChevronRight, Globe, BookOpen, X, Menu, Image, Receipt,
+  ChevronRight, Globe, BookOpen, X, Menu, Image, Receipt, Link2,
 } from 'lucide-react';
 
 const ACCENT = '#5392ce';
@@ -18,6 +18,15 @@ const SECTIONS = [
   { key: 'cravingMode', label: 'Craving Mode' },
   { key: 'savingsCalculator', label: 'Kalkulator uštede' },
   { key: 'privacyPolicy', label: 'Politika privatnosti' },
+  { key: 'podaciFirme', label: 'Podaci o firmi' },
+  { key: 'googleReviews', label: 'Google recenzije' },
+  { key: 'blogTexts', label: 'Blog (tekstovi stranice)' },
+  { key: 'contactForm', label: 'Kontakt forma' },
+  { key: 'newsletterPopup', label: 'Newsletter popup' },
+  { key: 'cookieBanner', label: 'Kolačići (cookie baner)' },
+  { key: 'eventPopup', label: 'Event popup (dugmad)' },
+  { key: 'languagePicker', label: 'Izbor jezika (početni ekran)' },
+  { key: 'seo', label: 'SEO (naslov i opis za Google)' },
 ];
 
 const navItemStyle = (isActive: boolean): React.CSSProperties => ({
@@ -157,6 +166,22 @@ export const AdminSidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <LangSection lang="EN" flag="" />
             </div>
           )}
+
+          <NavLink
+            to="/admin/slike"
+            style={({ isActive }) => navItemStyle(isActive) as any}
+          >
+            <Image size={16} />
+            Slike
+          </NavLink>
+
+          <NavLink
+            to="/admin/content/BHS/links"
+            style={({ isActive }) => navItemStyle(isActive) as any}
+          >
+            <Link2 size={16} />
+            Linkovi (Calendly, mreže)
+          </NavLink>
 
           {/* Divider */}
           <div style={{ height: '1px', background: '#1e1e1e', margin: '10px 0 6px' }} />

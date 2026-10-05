@@ -12,30 +12,26 @@ import { useReveal } from '../hooks/useReveal';
 import { WordReveal } from '../components/animations/WordReveal';
 import { useNavigate } from 'react-router-dom';
 import { GoogleReviews } from '../components/GoogleReviews';
+import { useSiteImage, useSiteImageList, bgStyle, posVars } from '../context/SiteImagesContext';
 
 interface HomeProps {
    onNavigate: (page: Page, lang: Language) => void;
 }
 
-// Hero slike: prva (SANA0684) je ona koju posjetitelj vidi pri otvaranju stranice,
-// i na računaru i na telefonu.
-const HERO_IMAGES = [
-   '/hero/sana-0684.jpg',
-   '/hero/sana-0508.jpg',
-   '/hero/sana-0322.jpg',
-   '/hero/sana-0645.jpg',
-   '/hero/sana-0568.jpg',
-];
 
 export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
    const { isAppLoading } = useUI();
+   // Hero slike dolaze iz admina (Admin → Slike); prva je ona koju posjetitelj prvo vidi.
+   const HERO_IMAGES = useSiteImageList('homeHero');
+   const forWhomBg = useSiteImage('homeForWhom');
+   const corporateBg = useSiteImage('homeCorporate');
    const [heroIdx, setHeroIdx] = useState(0);
    // Rotacija kreće tek kad se stranica pojavi (nakon izbora jezika), da prva slika uvijek bude SANA0684.
    useEffect(() => {
       if (isAppLoading) { setHeroIdx(0); return; }
-      const timer = setInterval(() => setHeroIdx(prev => (prev + 1) % HERO_IMAGES.length), 6000);
+      const timer = setInterval(() => setHeroIdx(prev => (prev + 1) % Math.max(HERO_IMAGES.length, 1)), 6000);
       return () => clearInterval(timer);
-   }, [isAppLoading]);
+   }, [isAppLoading, HERO_IMAGES.length]);
    const [selectedProgram, setSelectedProgram] = useState<string | null>(null);
    const [activeFaq, setActiveFaq] = useState<'individual' | 'corporate' | null>(null);
    const [selectedTestimonial, setSelectedTestimonial] = useState<{text: string, author: string} | null>(null);
@@ -120,47 +116,49 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             onMouseMove={handleMouseMove}
             className="relative overflow-hidden bg-brand-cream lg:min-h-screen lg:flex lg:items-center w-full pb-0 lg:pb-0"
          >
-            {/* MOBILE ONLY HERO - čista fotografija gore, plavi panel s tekstom dolje */}
+            {/* MOBILE ONLY HERO - fotografija preko cijelog ekrana, plavi prelaz odozdo */}
             <div className="block lg:hidden w-full relative h-[calc(100svh-80px)] mt-[80px] overflow-hidden bg-brand-blue">
-               <div className="absolute inset-x-0 top-0 h-[66%]">
-                  {HERO_IMAGES.map((img, idx) => (
-                     <img
-                        key={img}
-                        src={img}
-                        alt="HabitPlus Mobile Hero"
-                        fetchPriority={idx === 0 ? 'high' : 'auto'}
-                        loading={idx === 0 ? 'eager' : 'lazy'}
-                        className={`absolute inset-0 w-full h-full object-cover object-[50%_10%] transition-opacity duration-[1500ms] ease-in-out ${idx === heroIdx ? 'opacity-100' : 'opacity-0'}`}
-                     />
-                  ))}
-                  {/* Carousel dots */}
-                  <div className="absolute bottom-10 inset-x-0 flex justify-center gap-1.5" aria-hidden="true">
+               {HERO_IMAGES.map((img, idx) => (
+                  <img
+                     key={`${img.url}-${idx}`}
+                     src={img.url}
+                     alt={img.alt || 'HabitPlus'}
+                     fetchPriority={idx === 0 ? 'high' : 'auto'}
+                     loading={idx === 0 ? 'eager' : 'lazy'}
+                     className={`hp-pos absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out ${idx === heroIdx % HERO_IMAGES.length ? 'opacity-100' : 'opacity-0'}`}
+                     style={posVars(img)}
+                  />
+               ))}
+
+               {/* Plavi prelaz odozdo */}
+               <div
+                  className="absolute inset-x-0 bottom-0 h-[55%] pointer-events-none"
+                  style={{ background: 'linear-gradient(to top, rgba(58,120,182,0.97) 0%, rgba(70,133,195,0.85) 30%, rgba(83,146,206,0.45) 62%, rgba(83,146,206,0) 100%)' }}
+               />
+
+               {/* Tekst */}
+               <div className="absolute inset-x-0 bottom-0 z-10 px-7 pb-20 text-white">
+                  <h1 className="text-[46px] font-extrabold tracking-tight leading-none">{t.heroTitle}</h1>
+                  <p className="mt-3 text-lg font-medium leading-snug text-white/95 max-w-[300px]">
+                     {String(t.heroMobileSubtitle || '').split('\n')[0]}
+                  </p>
+                  {/* Slajdovi */}
+                  <div className="flex gap-1.5 mt-5" aria-hidden="true">
                      {HERO_IMAGES.map((img, idx) => (
-                        <span key={img} className={`h-1.5 rounded-full shadow-sm transition-all duration-500 ${idx === heroIdx ? 'w-6 bg-white' : 'w-1.5 bg-white/60'}`} />
+                        <span key={`${img.url}-${idx}`} className={`h-1 rounded-full transition-all duration-500 ${idx === heroIdx % HERO_IMAGES.length ? 'w-7 bg-white' : 'w-2 bg-white/50'}`} />
                      ))}
                   </div>
                </div>
 
-               {/* Text panel */}
-               <div className="absolute inset-x-0 bottom-0 z-10 rounded-t-[2rem] bg-gradient-to-br from-brand-blue to-brand-teal px-6 pt-7 pb-7 text-white shadow-[0_-12px_30px_rgba(15,23,42,0.18)]">
-                  <h1 className="text-[44px] font-extrabold tracking-tight leading-none">HabitPlus</h1>
-                  {(() => {
-                     const [lead, ...rest] = t.heroMobileSubtitle.split('\n');
-                     return (
-                        <div className="mt-3 space-y-1.5">
-                           <p className="text-[19px] font-semibold leading-snug">{lead}</p>
-                           {rest.length > 0 && <p className="text-[15px] leading-snug text-white/80">{rest.join(' ')}</p>}
-                        </div>
-                     );
-                  })()}
-                  <Button
-                     onClick={openContactModal}
-                     variant="white"
-                     className="mt-5 w-[calc(100%-5rem)] py-3.5 text-[15px] font-bold"
-                  >
-                     {t.heroMobileCta}
-                  </Button>
-               </div>
+               {/* Strelica prema sadržaju */}
+               <button
+                  type="button"
+                  aria-label="Dalje"
+                  onClick={() => window.scrollTo({ top: window.innerHeight - 40, behavior: 'smooth' })}
+                  className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 w-11 h-11 flex items-center justify-center text-white/90 animate-bounce"
+               >
+                  <ChevronDown size={26} />
+               </button>
             </div>
 
             {/* Desktop Background Carousel */}
@@ -170,13 +168,14 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                <div className="absolute inset-y-0 right-0 w-[58%]">
                   {HERO_IMAGES.map((img, idx) => (
                      <img
-                        key={img}
-                        src={img}
+                        key={`${img.url}-${idx}`}
+                        src={img.url}
                         alt=""
                         fetchPriority={idx === 0 ? 'high' : 'auto'}
                         loading={idx === 0 ? 'eager' : 'lazy'}
-                        className={`absolute inset-0 w-full h-full object-cover object-[50%_12%] transition-opacity duration-[2500ms] ease-in-out ${idx === heroIdx ? 'opacity-100' : 'opacity-0'}`}
+                        className={`hp-pos absolute inset-0 w-full h-full object-cover transition-opacity duration-[2500ms] ease-in-out ${idx === heroIdx % HERO_IMAGES.length ? 'opacity-100' : 'opacity-0'}`}
                         style={{
+                           ...posVars(img),
                            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 38%)',
                            maskImage: 'linear-gradient(to right, transparent 0%, black 38%)',
                         }}
@@ -196,7 +195,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                   {/* Title */}
                   <div className="w-full lg:col-span-12 animate-fade-in-up text-center lg:text-left order-1">
                      <WordReveal 
-                        text="HabitPlus" 
+                        text={t.heroTitle} 
                         className="text-5xl md:text-8xl lg:text-8xl font-serif font-bold text-brand-blue lg:text-white tracking-tight justify-center lg:justify-start"
                      />
                               </div>
@@ -246,7 +245,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          </section>
 
           {/* HERO HOOK - Full Width Bridge Section */}
-          <section ref={hookRef} className={`relative z-30 bg-white reveal-hidden ${hookVisible ? 'reveal-visible' : ''}`}>
+          <section ref={hookRef} className={`relative z-30 bg-white overflow-hidden lg:overflow-visible reveal-hidden ${hookVisible ? 'reveal-visible' : ''}`}>
 
              {/* CRAVING MODE INLINE BANNER - slides in as user starts scrolling on mobile */}
              <div
@@ -270,7 +269,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                 </button>
              </div>
 
-             <div className="max-w-4xl mx-auto px-6 md:px-8 flex flex-col items-center text-center relative gap-6 pt-32 pb-20">
+             <div className="max-w-4xl mx-auto px-6 md:px-8 flex flex-col items-center text-center relative gap-6 pt-14 pb-14 md:pt-32 md:pb-20">
                 {/* Decorative Pattern - blueish for white background */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-brand-blue/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 pointer-events-none animate-breath"></div>
 
@@ -284,7 +283,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                       variant="primary"
                       size="lg"
                       className="shadow-xl shadow-brand-blue/20"
-                      onClick={() => window.open('https://calendly.com/contact-habitplus/15min', '_blank')}
+                      onClick={() => window.open(dict.BHS.links.calendlyUrl, '_blank')}
                    >
                       {t.hookCta}
                    </Button>
@@ -293,18 +292,18 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           </section>
 
          {/* 3. UPOZNAJ OSNIVAČICU - Clean Unified Layout bg-white */}
-         <section ref={aboutRef} className={`bg-white py-24 reveal-hidden ${aboutVisible ? 'reveal-visible' : ''}`} id="o-nama">
+         <section ref={aboutRef} className={`bg-white py-16 md:py-24 reveal-hidden ${aboutVisible ? 'reveal-visible' : ''}`} id="o-nama">
             <div className="max-w-7xl mx-auto px-6 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                {/* Left Side - Text */}
-               <div className="flex flex-col justify-center">                   <WordReveal 
+               <div className="flex flex-col justify-center text-center lg:text-left">                   <WordReveal 
                     text={t.aboutFounderTitle}
                     className="text-4xl md:text-5xl lg:text-6xl font-serif text-slate-800 mb-6 leading-tight justify-center lg:justify-start"
                   />
-                  <p className="text-gray-600 text-[1.15rem] font-medium leading-[1.8] mb-10 max-w-md">
+                  <p className="text-gray-600 text-[1.15rem] font-medium leading-[1.8] mb-10 max-w-md mx-auto lg:mx-0">
                      {t.aboutFounderSubtitle}
                   </p>
 
-                  <div className="flex">
+                  <div className="flex justify-center lg:justify-start">
                      <Button
                         variant="primary"
                         size="lg"
@@ -323,8 +322,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         const Icons = [Globe, ShieldCheck, Brain, Scale];
                         const Icon = Icons[i];
                         return (
-                          <div key={i} className="group flex flex-col bg-white rounded-[2rem] p-8 border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.12)] hover:-translate-y-1 transition-all duration-300">
-                             <div className="w-14 h-14 bg-brand-blue/10 rounded-xl flex items-center justify-center text-brand-blue mb-6 shadow-sm group-hover:bg-brand-blue group-hover:text-white group-hover:scale-105 group-hover:-translate-y-1 transition-all duration-300">
+                          <div key={i} className="group flex flex-col bg-white rounded-[2rem] p-6 sm:p-8 border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.12)] hover:-translate-y-1 transition-all duration-300">
+                             <div className="w-14 h-14 bg-brand-blue/10 rounded-xl flex items-center justify-center text-brand-blue mb-4 sm:mb-6 shadow-sm group-hover:bg-brand-blue group-hover:text-white group-hover:scale-105 group-hover:-translate-y-1 transition-all duration-300">
                                 <Icon size={24} strokeWidth={1.5} />
                                          </div>
                              <div>
@@ -340,11 +339,11 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          </section>
 
          {/* 4. DA LI JE OVO ZA TEBE - Simplified */}
-         <section ref={zaKogaRef} id="za-koga" className={`py-32 md:py-48 relative overflow-hidden scroll-mt-24 reveal-hidden ${zaKogaVisible ? 'reveal-visible' : ''}`}>
+         <section ref={zaKogaRef} id="za-koga" className={`py-20 md:py-48 relative overflow-hidden scroll-mt-24 reveal-hidden ${zaKogaVisible ? 'reveal-visible' : ''}`}>
             {/* Background photo */}
             <div
-               className="absolute inset-0 bg-cover bg-no-repeat"
-               style={{ backgroundImage: 'url(/za-koga-bg.jpg)', backgroundPosition: 'center 30%' }}
+               className="hp-pos absolute inset-0 bg-cover bg-no-repeat"
+               style={bgStyle(forWhomBg)}
             />
             {/* Blue overlay at 90% opacity */}
             <div className="absolute inset-0 bg-brand-blue opacity-90" />
@@ -354,12 +353,12 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                  center
                  className="text-4xl md:text-5xl lg:text-5xl/6xl font-serif font-bold text-white mb-8"
                />
-               <p className="text-white/90 text-xl md:text-2xl mx-auto mb-12 max-w-2xl leading-relaxed">
+               <p className="text-white/90 text-lg md:text-2xl mx-auto mb-8 md:mb-12 max-w-2xl leading-relaxed">
                   {t.prepoznajSebeSubtitle}
                </p>
 
                <Button
-                  onClick={() => window.open('https://calendly.com/contact-habitplus/15min', '_blank')}
+                  onClick={() => window.open(dict.BHS.links.calendlyUrl, '_blank')}
                   variant="white"
                   size="lg"
                   withArrow
@@ -370,9 +369,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          </section>
 
          {/* 5. PROGRAMS - Cards with Hover Effects */}
-         <section ref={programiRef} className={`py-24 bg-white reveal-hidden overflow-hidden ${programiVisible ? 'reveal-visible' : ''}`} id="programi">
+         <section ref={programiRef} className={`py-16 md:py-24 bg-white reveal-hidden overflow-hidden ${programiVisible ? 'reveal-visible' : ''}`} id="programi">
             <div className="max-w-7xl mx-auto px-6 md:px-8">
-               <div className="text-center max-w-3xl mx-auto mb-16">
+               <div className="text-center max-w-3xl mx-auto mb-10 md:mb-16">
                   <WordReveal 
                     text={t.findProgramTitle}
                     center
@@ -410,10 +409,10 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          </section>
 
          {/* NEW: Za Organizacije - Full Width Hook */}
-         <section ref={corporateRef} id="corporate" className={`py-32 md:py-40 relative overflow-hidden w-full scroll-mt-24 min-h-[60vh] flex items-center reveal-hidden ${corporateVisible ? 'reveal-visible' : ''}`}>
+         <section ref={corporateRef} id="corporate" className={`py-20 md:py-40 relative overflow-hidden w-full scroll-mt-24 md:min-h-[60vh] flex items-center reveal-hidden ${corporateVisible ? 'reveal-visible' : ''}`}>
             {/* Background Image & Overlay */}
             <div className="absolute inset-0 z-0">
-               <div className="absolute inset-0 bg-[url('/SL__8066.jpg')] bg-cover bg-center" style={{ backgroundPosition: 'center 40%' }} />
+               <div className="hp-pos absolute inset-0 bg-cover" style={bgStyle(corporateBg)} />
                <div className="absolute inset-0 bg-brand-blue opacity-80" />
                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
             </div>
@@ -436,7 +435,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                  center
                  className="text-4xl md:text-5xl lg:text-5xl/6xl font-serif font-extrabold text-white mb-8 leading-[1.1] w-full"
                />
-               <p className="text-white/90 text-xl md:text-2xl mx-auto mb-12 max-w-3xl leading-relaxed font-medium">
+               <p className="text-white/90 text-lg md:text-2xl mx-auto mb-8 md:mb-12 max-w-3xl leading-relaxed font-medium">
                   {t.corpBannerSubtitle}
                </p>
 
@@ -453,9 +452,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          </section>
 
          {/* 7.5. TESTIMONIALS */}
-         <section ref={testimonialsRef} className={`py-24 bg-brand-cream border-t border-gray-100 relative overflow-hidden reveal-hidden ${testimonialsVisible ? 'reveal-visible' : ''}`}>
+         <section ref={testimonialsRef} className={`py-16 md:py-24 bg-brand-cream border-t border-gray-100 relative overflow-hidden reveal-hidden ${testimonialsVisible ? 'reveal-visible' : ''}`}>
             <div className="max-w-7xl mx-auto px-6 md:px-8">
-               <div className="text-center mb-16">
+               <div className="text-center mb-10 md:mb-16">
                   <WordReveal 
                     text={t.testimonialsTitle}
                     center
@@ -466,7 +465,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                   {/* Google Reviews Button */}
                   <div className="mt-8 flex justify-center">
                       <a
-                         href="https://g.page/r/CXsWmmOe8rKSEAI/review"
+                         href={dict.BHS.links.googleReviewUrl}
                          target="_blank"
                          rel="noopener noreferrer"
                          className="group inline-flex items-center gap-4 bg-white border border-gray-200 rounded-2xl px-6 py-4 hover:-translate-y-1 hover:bg-gray-50 transition-all duration-300"
@@ -482,13 +481,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         </div>
                         <div className="flex flex-col items-start">
                            <span className="text-sm font-bold text-brand-dark leading-tight">
-                              {lang === 'BHS' ? 'Ostavi Google recenziju' : 'Leave a Google review'}
+                              {t.leaveGoogleReview}
                            </span>
                            <div className="flex items-center gap-1 mt-1">
                               {[...Array(5)].map((_, i) => (
                                  <svg key={i} viewBox="0 0 20 20" className="w-3.5 h-3.5 text-[#FBBC05] fill-current"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                               ))}
-                              <span className="text-xs text-gray-400 ml-1 font-medium">Google</span>
+                              <span className="text-xs text-gray-400 ml-1 font-medium">{t.googleLabel}</span>
                            </div>
                         </div>
                         <div className="w-8 h-8 rounded-full bg-brand-stone flex items-center justify-center ml-2 group-hover:bg-brand-blue/10 transition-colors">
@@ -499,6 +498,46 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                </div>
                 </div>
             
+            {/* Mobile: native swipeable horizontal scroll, list rendered once */}
+            <div className="md:hidden overflow-x-auto snap-x snap-mandatory w-full" style={{ scrollbarWidth: 'none' }}>
+               <div className="flex gap-4 px-6 w-max">
+                  {testimonials.map((t, idx) => (
+                      <div 
+                         key={idx} 
+                         className="snap-center shrink-0 w-[85vw] max-w-[320px] bg-white rounded-3xl p-6 border border-gray-100 flex flex-col transition-all duration-300 group cursor-default hover:bg-gray-50/50"
+                      >
+                        <div className="flex justify-between items-start mb-6">
+                           <Quote size={32} className="text-brand-blue/20 shrink-0 group-hover:text-brand-blue group-hover:scale-110 transition-all" />
+                           <div className="flex gap-0.5 text-brand-blue">
+                              {[...Array(5)].map((_, i) => (
+                                 <Star key={i} size={16} fill="currentColor" strokeWidth={0} />
+                              ))}
+                                       </div>
+                                    </div>
+                        <div className="flex-1 relative">
+                           <p className="text-gray-600 relative z-10 text-[15px] leading-relaxed line-clamp-5 italic">
+                              "{t.text}"
+                           </p>
+                           {t.text.length > 120 && (
+                              <button 
+                                 onClick={() => setSelectedTestimonial(t)} 
+                                 className="text-brand-blue font-bold text-sm mt-4 hover:underline flex items-center gap-1 group/btn"
+                              >
+                                 {dict[lang].home.testimonialReadMore}
+                                 <ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                              </button>
+                           )}
+                                    </div>
+                        <div className="mt-8 pt-6 border-t border-gray-50 mt-auto">
+                           <p className="font-bold text-brand-dark leading-tight">{t.author}</p>
+                                    </div>
+                                 </div>
+                  ))}
+               </div>
+            </div>
+
+            {/* Desktop: auto-scrolling marquee */}
+            <div className="hidden md:block">
             <div className="relative overflow-hidden w-full">
                <div className="animate-marquee flex gap-6 px-4">
                   {[...testimonials, ...testimonials, ...testimonials].map((t, idx) => (
@@ -523,7 +562,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                                  onClick={() => setSelectedTestimonial(t)} 
                                  className="text-brand-blue font-bold text-sm mt-4 hover:underline flex items-center gap-1 group/btn"
                               >
-                                 {t.readMore || (lang === 'BHS' ? 'Pročitaj više' : 'Read more')}
+                                 {dict[lang].home.testimonialReadMore}
                                  <ArrowUpRight size={14} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
                               </button>
                            )}
@@ -535,13 +574,14 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                   ))}
                        </div>
                 </div>
+            </div>
          </section>
 
          {/* GOOGLE REVIEWS SECTION */}
          <GoogleReviews />
 
          {/* 9. BOTTOM CTA - Minimalist - Relocated and Restyled */}
-         <section className="py-24 bg-brand-blue relative overflow-hidden w-full scroll-mt-24">
+         <section className="py-16 md:py-24 bg-brand-blue relative overflow-hidden w-full scroll-mt-24">
             {/* Added Blue/White Ornaments Removed */}
             <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
                <WordReveal 
@@ -549,22 +589,22 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                  center
                  className="text-3xl md:text-6xl font-serif font-bold text-white mb-8"
                />
-               <div className="flex flex-row justify-center gap-2 sm:gap-6">
+               <div className="flex flex-col sm:flex-row justify-center items-stretch sm:items-center gap-3 sm:gap-6">
                   <Button 
                     size="lg" 
                     variant="white" 
-                    className="!text-brand-blue !px-3 sm:!px-8 !py-2 sm:!py-4 !text-[13px] sm:!text-base shadow-xl" 
-                    onClick={() => window.open('https://calendly.com/contact-habitplus/15min', '_blank')}
+                    className="w-full sm:w-auto !text-brand-blue sm:!px-8 sm:!py-4 sm:!text-base shadow-xl" 
+                    onClick={() => window.open(dict.BHS.links.calendlyUrl, '_blank')}
                   >
                      {t.ctaBannerButton}
                   </Button>
                      <Button 
                         size="lg" 
                         variant="outline" 
-                        className="!border-white !text-white hover:!bg-white hover:!text-brand-blue !px-3 sm:!px-8 !py-2 sm:!py-4 !text-[13px] sm:!text-base" 
+                        className="!border-white !text-white hover:!bg-white hover:!text-brand-blue w-full sm:w-auto sm:!px-8 sm:!py-4 sm:!text-base" 
                         onClick={openContactModal}
                       >
-                         {lang === 'BHS' ? 'Pošalji e-mail' : 'Send e-mail'}
+                         {t.sendEmailButton}
                       </Button>
                        </div>
             </div>
@@ -576,7 +616,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          </section>
 
          {/* SAVINGS CALCULATOR */}
-         <section ref={calculatorRef} className={`py-24 bg-brand-cream relative overflow-hidden reveal-hidden ${calculatorVisible ? 'reveal-visible' : ''}`}>
+         <section ref={calculatorRef} className={`py-16 md:py-24 bg-brand-cream relative overflow-hidden reveal-hidden ${calculatorVisible ? 'reveal-visible' : ''}`}>
             {/* Subtle background blobs */}
             <div className="absolute -top-20 -left-20 w-96 h-96 bg-brand-blue/5 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-72 h-72 bg-brand-teal/5 rounded-full blur-3xl pointer-events-none" />
@@ -584,7 +624,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                <div className="text-center mb-10">
 
                   <WordReveal 
-                    text={lang === 'BHS' ? 'Kalkulator uštede' : 'Savings calculator'}
+                    text={dict[lang].savingsCalculator.title}
                     center
                     className="text-3xl md:text-5xl font-serif font-bold text-brand-blue w-full mb-4"
                   />
@@ -600,9 +640,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          <BlogSection />
 
          {/* 8. FAQs - Two Boxes */}
-         <div ref={faqRef} id="faq" className={`pt-24 pb-12 bg-white scroll-mt-24 reveal-hidden ${faqVisible ? 'reveal-visible' : ''}`}>
+         <div ref={faqRef} id="faq" className={`pt-16 md:pt-24 pb-12 bg-white scroll-mt-24 reveal-hidden ${faqVisible ? 'reveal-visible' : ''}`}>
             <div className="max-w-4xl mx-auto px-6">
-               <div className="text-center mb-16">
+               <div className="text-center mb-10 md:mb-16">
                   <WordReveal 
                     text={t.faq.title}
                     center
@@ -615,9 +655,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                   {/* Fizička Lica Box */}
                   <div
                      onClick={() => setActiveFaq('individual')}
-                     className="bg-brand-stone/30 rounded-3xl p-10 cursor-pointer border border-transparent hover:border-brand-teal/20 hover:shadow-lg transition-all group group-hover:bg-brand-stone/50 flex flex-col items-center text-center"
+                     className="bg-brand-stone/30 rounded-3xl p-6 md:p-10 cursor-pointer border border-transparent hover:border-brand-teal/20 hover:shadow-lg transition-all group group-hover:bg-brand-stone/50 flex flex-col items-center text-center"
                   >
-                     <div className="w-20 h-20 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-teal mb-6 group-hover:scale-110 transition-transform">
+                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-teal mb-6 group-hover:scale-110 transition-transform">
                         <User size={40} strokeWidth={1.5} />
                                  </div>
                      <h3 className="text-2xl font-bold text-brand-dark mb-4">{t.faq.individual.boxTitle}</h3>
@@ -630,9 +670,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                   {/* Organizacije Box */}
                   <div
                      onClick={() => setActiveFaq('corporate')}
-                     className="bg-brand-blue/5 rounded-3xl p-10 cursor-pointer border border-transparent hover:border-brand-blue/20 hover:shadow-lg transition-all group group-hover:bg-brand-blue/10 flex flex-col items-center text-center"
+                     className="bg-brand-blue/5 rounded-3xl p-6 md:p-10 cursor-pointer border border-transparent hover:border-brand-blue/20 hover:shadow-lg transition-all group group-hover:bg-brand-blue/10 flex flex-col items-center text-center"
                   >
-                     <div className="w-20 h-20 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-blue mb-6 group-hover:scale-110 transition-transform">
+                     <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white shadow-sm flex items-center justify-center text-brand-blue mb-6 group-hover:scale-110 transition-transform">
                         <Building2 size={40} strokeWidth={1.5} />
                                  </div>
                      <h3 className="text-2xl font-bold text-brand-dark mb-4">{t.faq.corporate.boxTitle}</h3>
@@ -652,18 +692,18 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                style={{ top: 0, left: 0, right: 0, bottom: 0 }}
             >
                <div
-                  className="bg-white rounded-[2rem] w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl animate-fade-in-up relative overflow-hidden"
+                  className="bg-white rounded-[2rem] w-full max-w-3xl max-h-[85dvh] flex flex-col shadow-2xl animate-fade-in-up relative overflow-hidden"
                   onClick={(e) => e.stopPropagation()}
                >
                   {/* Modal Header */}
-                  <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
+                  <div className="px-5 py-4 sm:px-8 sm:py-6 border-b border-gray-100 flex items-center justify-between gap-3 sticky top-0 bg-white z-10">
                      <div className="flex items-center gap-3">
                         {activeFaq === 'individual' ? (
                            <div className="w-10 h-10 rounded-full bg-brand-teal/10 flex items-center justify-center text-brand-teal"><User size={20} /></div>
                         ) : (
                            <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue"><Building2 size={20} /></div>
                         )}
-                        <h3 className="text-2xl font-serif font-bold text-brand-dark">
+                        <h3 className="text-xl sm:text-2xl font-serif font-bold text-brand-dark">
                            {activeFaq === 'individual' ? t.faq.individual.modalTitle : t.faq.corporate.modalTitle}
                         </h3>
                                  </div>
@@ -676,10 +716,10 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                               </div>
 
                   {/* Modal Body - Scrollable */}
-                  <div className="p-8 overflow-y-auto custom-scrollbar">
+                  <div className="p-4 sm:p-8 overflow-y-auto custom-scrollbar">
                      <div className="space-y-4">
                         {(activeFaq === 'individual' ? t.faq.individual.items : t.faq.corporate.items).map((faq, i) => (
-                           <details key={i} className={`group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer ${activeFaq === 'individual' ? 'open:bg-brand-stone/10' : 'open:bg-brand-blue/5'}`}>
+                           <details key={i} className={`group bg-white border border-gray-100 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-all cursor-pointer ${activeFaq === 'individual' ? 'open:bg-brand-stone/10' : 'open:bg-brand-blue/5'}`}>
                               <summary className="font-bold text-brand-dark flex justify-between items-center outline-none">
                                  <span className="pr-4">{faq.q}</span>
                                  <ChevronDown size={20} className={`${activeFaq === 'individual' ? 'text-brand-teal' : 'text-brand-blue'} group-open:rotate-180 transition-transform shrink-0`} />
@@ -694,7 +734,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                                  {faq.cta && (
                                    <div className="mt-4">
                                      <button 
-                                       onClick={() => faq.cta.type === 'calendly' ? window.open('https://calendly.com/contact-habitplus/15min', '_blank') : openContactModal()} 
+                                       onClick={() => faq.cta.type === 'calendly' ? window.open(dict.BHS.links.calendlyUrl, '_blank') : openContactModal()} 
                                        className="font-bold text-brand-blue hover:underline"
                                      >
                                        → {faq.cta.text}
@@ -722,8 +762,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
          {
             selectedTestimonial && (
                <div className="fixed inset-0 bg-black/20 backdrop-blur-md z-50 flex items-center justify-center p-4" onClick={() => setSelectedTestimonial(null)}>
-                  <div className="bg-white rounded-[2.5rem] max-w-2xl w-full p-10 relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100/50 animate-fade-in-up" onClick={(e) => e.stopPropagation()}>
-                     <button onClick={() => setSelectedTestimonial(null)} className="absolute top-6 right-6 p-2 bg-gray-100 rounded-full hover:bg-gray-200 text-gray-500 transition-colors z-10"><X size={20} /></button>
+                  <div className="bg-white rounded-[2.5rem] max-w-2xl w-full max-h-[85dvh] overflow-y-auto p-6 sm:p-10 relative shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100/50 animate-fade-in-up" onClick={(e) => e.stopPropagation()}>
+                     <button onClick={() => setSelectedTestimonial(null)} className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 text-gray-500 transition-colors z-10"><X size={20} /></button>
 
                      <Quote size={40} className="text-brand-blue/20 mb-6" />
                      

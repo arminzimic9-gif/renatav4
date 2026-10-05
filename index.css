@@ -92,3 +92,15 @@
   .stagger-3 { transition-delay: 300ms; }
   .stagger-4 { transition-delay: 400ms; }
 }
+
+/* Fokus slika iz admina: --pos-m za mobitel, --pos-d za računar (vidi SiteImagesContext) */
+.hp-pos {
+  object-position: var(--pos-m, 50% 50%);
+  background-position: var(--pos-m, 50% 50%);
+}
+@media (min-width: 1024px) {
+  .hp-pos {
+    object-position: var(--pos-d, 50% 50%);
+    background-position: var(--pos-d, 50% 50%);
+  }
+}

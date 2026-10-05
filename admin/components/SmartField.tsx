@@ -29,6 +29,16 @@ const labelStyle: React.CSSProperties = {
   textTransform: 'uppercase',
 };
 
+// Čitljivi nazivi za polja koja nisu tekst (npr. početne vrijednosti kalkulatora).
+const FIELD_LABELS: Record<string, string> = {
+  defaultCigsPerDay: 'Početno: cigareta dnevno',
+  defaultPackPrice: 'Početno: cijena kutije cigareta',
+  defaultSnusPerDay: 'Početno: snus vrećica dnevno',
+  defaultSnusCanPrice: 'Početno: cijena kutije snusa',
+  defaultVapePodsPerWeek: 'Početno: vape punjenja sedmično',
+  defaultVapePodPrice: 'Početno: cijena vape punjenja',
+};
+
 const URL_KEYS = ['url', 'link', 'href', 'src', 'image', 'img', 'photo', 'cover', 'coverimage'];
 const LONG_TEXT_KEYS = ['description', 'text', 'content', 'bio', 'paragraph', 'body', 'excerpt', 'subtitle', 'a', 'intro', 'lead'];
 const COLOR_KEYS = ['color', 'colour'];
@@ -113,7 +123,7 @@ export const SmartField: React.FC<SmartFieldProps> = ({ fieldKey, value, path, o
   if (typeof value === 'number') {
     return (
       <div style={{ marginBottom: '16px' }}>
-        <label style={labelStyle}>{fieldKey}</label>
+        <label style={labelStyle}>{FIELD_LABELS[fieldKey] || fieldKey}</label>
         <input
           type="number"
           value={value}

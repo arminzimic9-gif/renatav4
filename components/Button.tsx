@@ -41,7 +41,7 @@ export const Button: React.FC<ButtonProps> = ({
   const sizes = {
     sm: "text-sm px-6 py-2",
     md: "text-base px-8 py-3.5",
-    lg: "text-lg px-10 py-4.5", // Larger touch target
+    lg: "text-lg px-10 py-4", // Larger touch target
   };
 
   const widthClass = fullWidth ? "w-full" : "";

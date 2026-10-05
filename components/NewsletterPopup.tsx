@@ -14,7 +14,7 @@ export const NewsletterPopup: React.FC = () => {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const { lang, dict } = useLanguage();
   const t = dict[lang].footer.newsletter;
-  const isBHS = lang === 'BHS';
+  const tp = dict[lang].newsletterPopup;
 
   useEffect(() => {
     // Ne prikazuj ako je već odbio ili pretplaćen
@@ -62,7 +62,8 @@ export const NewsletterPopup: React.FC = () => {
       <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 animate-fade-in-up">
         <button
           onClick={dismiss}
-          className="absolute top-4 right-4 text-gray-300 hover:text-gray-500 transition-colors p-1"
+          aria-label="Close"
+          className="absolute top-2 right-2 p-2.5 text-gray-400 md:top-4 md:right-4 md:p-1 md:text-gray-300 hover:text-gray-500 transition-colors"
         >
           <X size={20} />
         </button>
@@ -76,10 +77,10 @@ export const NewsletterPopup: React.FC = () => {
           <div className="text-center py-4">
             <div className="text-4xl mb-3">🎉</div>
             <h3 className="text-xl font-bold text-brand-dark mb-2">
-              {isBHS ? 'Hvala na prijavi!' : 'Thanks for subscribing!'}
+              {tp.successTitle}
             </h3>
             <p className="text-gray-500 text-sm">
-              {isBHS ? 'Uskoro ćeš primati korisne savjete.' : 'You\'ll receive helpful tips soon.'}
+              {tp.successText}
             </p>
           </div>
         ) : (
@@ -97,8 +98,8 @@ export const NewsletterPopup: React.FC = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={isBHS ? 'tvoj@email.com' : 'your@email.com'}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent transition-all"
+                placeholder={tp.emailPlaceholder}
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-base md:text-sm focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent transition-all"
               />
               <button
                 type="submit"
@@ -107,21 +108,21 @@ export const NewsletterPopup: React.FC = () => {
               >
                 <Send size={16} />
                 {status === 'loading'
-                  ? (isBHS ? 'Šaljem...' : 'Sending...')
+                  ? tp.sending
                   : t.button}
               </button>
               {status === 'error' && (
                 <p className="text-red-500 text-xs text-center">
-                  {isBHS ? 'Greška. Pokušaj ponovo.' : 'Error. Please try again.'}
+                  {tp.error}
                 </p>
               )}
             </form>
 
             <button
               onClick={dismiss}
-              className="w-full mt-3 text-gray-400 text-xs hover:text-gray-600 transition-colors"
+              className="w-full mt-1 py-3 text-sm md:mt-3 md:py-0 md:text-xs text-gray-400 hover:text-gray-600 transition-colors"
             >
-              {isBHS ? 'Ne, hvala' : 'No thanks'}
+              {tp.dismiss}
             </button>
           </>
         )}

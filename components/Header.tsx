@@ -145,7 +145,7 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
             <button
               onClick={handleLanguageSwitch}
               className="flex items-center gap-3 transition-transform hover:scale-105"
-              title={lang === 'BHS' ? 'Switch to English' : 'Prebaci na BHS'}
+              title={t.languageSwitchTitle}
             >
                <img 
                  src="https://flagcdn.com/w80/ba.png" 
@@ -162,7 +162,8 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-brand-dark hover:bg-black/5 rounded-full transition-colors relative z-50 mr-1"
+            className="md:hidden p-2.5 text-brand-dark hover:bg-black/5 rounded-full transition-colors relative z-50 mr-1"
+            aria-label="Menu"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -173,26 +174,26 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate }) => {
       {/* Mobile Menu Overlay - Frosted Glass */}
       <RemoveScroll enabled={isMobileMenuOpen} className="pointer-events-none">
         <div
-          className={`fixed inset-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden flex flex-col px-8 pt-28 pb-8 overflow-y-auto
+          className={`fixed inset-0 z-40 transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] md:hidden flex flex-col px-8 pt-24 pb-8 overflow-y-auto
           ${isMobileMenuOpen
               ? 'opacity-100 pointer-events-auto backdrop-blur-3xl bg-white/60'
               : 'opacity-0 pointer-events-none backdrop-blur-none bg-transparent'}`}
         >
           <div className="my-auto w-full flex flex-col items-center">
-            <div className="flex flex-col gap-8 items-center text-center">
+            <div className="flex flex-col gap-6 items-center text-center">
               {navItems.map((item) => (
                 <a
                   key={item.label}
                   href={ROUTES[lang][item.page] + (item.hash ? `#${item.hash}` : '')}
                   onClick={(e) => handleNavClick(e, item.page, item.hash)}
-                  className="text-3xl font-medium text-brand-dark hover:text-brand-blue transition-colors"
+                  className="text-2xl font-medium text-brand-dark hover:text-brand-blue transition-colors"
                 >
                   {item.label}
                 </a>
               ))}
             </div>
 
-            <div className="mt-12 space-y-6 max-w-xs mx-auto w-full">
+            <div className="mt-8 space-y-6 max-w-xs mx-auto w-full">
               <div className="flex items-center justify-center gap-4 py-4 border-t border-gray-200/50">
                 <span className="text-gray-500 font-medium text-sm">{t.mobileJezik}</span>
                 <button onClick={handleLanguageSwitch} className="flex items-center gap-3 bg-white/80 backdrop-blur-md px-5 py-2 rounded-full shadow-sm">

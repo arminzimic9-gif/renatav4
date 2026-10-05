@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Language } from '../context/LanguageContext';
+import { Language, useLanguage } from '../context/LanguageContext';
 import { RemoveScroll } from 'react-remove-scroll';
 
 export const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [isVisible, setIsVisible] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  const { dict } = useLanguage();
+  const tBHS = dict.BHS.languagePicker;
+  const tEN = dict.EN.languagePicker;
 
   const handleLanguageSelect = (lang: Language) => {
     setIsVisible(false);
@@ -31,8 +34,8 @@ export const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete
           </div>
 
           <h2 className="text-2xl font-serif font-bold text-brand-dark mb-8 text-center">
-            Odaberite jezik<br/>
-            <span className="text-xl font-normal text-slate-500">Choose your language</span>
+            {tBHS.title}<br/>
+            <span className="text-xl font-normal text-slate-500">{tEN.title}</span>
           </h2>
 
           {/* Language Options */}
@@ -49,7 +52,7 @@ export const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
                     />
                   </div>
-                  <span className="font-bold text-brand-dark group-hover:text-brand-blue transition-colors text-lg">BHS</span>
+                  <span className="font-bold text-brand-dark group-hover:text-brand-blue transition-colors text-lg">{tBHS.languageName}</span>
               </button>
 
               {/* EN */}
@@ -64,14 +67,14 @@ export const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
                     />
                   </div>
-                  <span className="font-bold text-brand-dark group-hover:text-brand-blue transition-colors text-lg">English</span>
+                  <span className="font-bold text-brand-dark group-hover:text-brand-blue transition-colors text-lg">{tEN.languageName}</span>
               </button>
           </div>
 
           {/* Mobile Experience Warning */}
           <div className="mt-16 text-center md:hidden text-brand-dark/50 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-            <p className="text-sm font-medium">Za najbolje iskustvo koristite računar</p>
-            <p className="text-xs mt-1">For the best experience use desktop</p>
+            <p className="text-sm font-medium">{tBHS.desktopHint}</p>
+            <p className="text-xs mt-1">{tEN.desktopHint}</p>
           </div>
         </div>
       </div>

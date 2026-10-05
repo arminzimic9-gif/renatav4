@@ -8,6 +8,7 @@ import {
 import { useAdminPanel } from '../context/AdminPanelContext';
 import { popupService } from '../services/firestoreService';
 import { PopupDocument } from '../types';
+import { LegacyLocalDataBanner } from '../components/LegacyLocalDataBanner';
 
 const ACCENT = '#5392ce';
 
@@ -100,6 +101,7 @@ export const AdminDashboardNew: React.FC = () => {
 
   return (
     <div style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto' }}>
+      <LegacyLocalDataBanner />
 
       {/* Page title and Clock */}
       <div style={{ marginBottom: '32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

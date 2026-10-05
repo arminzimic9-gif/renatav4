@@ -130,24 +130,23 @@ exports.handleNewsletterSignup = onDocumentCreated('newsletter/{docId}', async (
 // ---------------------------------------------------------------------------
 // Admin: fakture (slanje emaila i AI generisanje)
 // ---------------------------------------------------------------------------
-// Dozvoljeno samo prijavljenim Firebase korisnicima čiji je email na popisu
-// ADMIN_EMAILS (zarezom odvojeno). Ako popis nije podešen, sve se odbija.
-const adminEmails = defineString('ADMIN_EMAILS', { default: '' });
+// Dozvoljeno samo prijavljenim Firebase korisnicima čiji email postoji u kolekciji
+// "admins" (isti popis koji koriste Firestore i Storage pravila).
 const geminiKey = defineSecret('GEMINI_API_KEY');
 
-function requireAdmin(request) {
-  if (!request.auth) {
+async function requireAdmin(request) {
+  if (!request.auth || !request.auth.token.email) {
     throw new HttpsError('unauthenticated', 'Potrebna je prijava.');
   }
-  const allowed = adminEmails.value().split(',').map((e) => e.trim().toLowerCase()).filter(Boolean);
-  const email = String(request.auth.token.email || '').toLowerCase();
-  if (!allowed.length || !allowed.includes(email)) {
+  const email = String(request.auth.token.email).toLowerCase();
+  const snap = await admin.firestore().doc(`admins/${email}`).get();
+  if (!snap.exists) {
     throw new HttpsError('permission-denied', 'Nemate dozvolu za ovu radnju.');
   }
 }
 
 exports.sendInvoiceEmail = onCall({ timeoutSeconds: 60, maxInstances: 3 }, async (request) => {
-  requireAdmin(request);
+  await requireAdmin(request);
   const { to, subject, body, filename, pdfBase64 } = request.data || {};
 
   if (typeof to !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) {
@@ -176,22 +175,41 @@ exports.sendInvoiceEmail = onCall({ timeoutSeconds: 60, maxInstances: 3 }, async
 });
 
 exports.generateInvoice = onCall({ secrets: [geminiKey], timeoutSeconds: 60, maxInstances: 3 }, async (request) => {
-  requireAdmin(request);
+  await requireAdmin(request);
   const prompt = request.data && request.data.prompt;
   if (typeof prompt !== 'string' || !prompt.trim() || prompt.length > 4000) {
     throw new HttpsError('invalid-argument', 'Opis fakture nedostaje ili je predug.');
   }
+
+  // Sačuvani klijenti i artikli služe kao kontekst da AI popuni tačne podatke i cijene.
+  const clip = (v, n) => (typeof v === 'string' ? v.slice(0, n) : '');
+  const clients = (Array.isArray(request.data.clients) ? request.data.clients : []).slice(0, 300).map((c) => ({
+    name: clip(c && c.name, 200), address: clip(c && c.address, 300), clientId: clip(c && c.clientId, 50), email: clip(c && c.email, 200),
+  }));
+  const articles = (Array.isArray(request.data.articles) ? request.data.articles : []).slice(0, 300).map((a) => ({
+    description: clip(a && a.description, 300), price: typeof (a && a.price) === 'number' ? a.price : null,
+  }));
+  const today = clip(request.data.today, 20);
+  const contextBlock = `
+      Poznati klijenti (JSON): ${JSON.stringify(clients)}
+      Poznati artikli/usluge sa standardnim cijenama (JSON): ${JSON.stringify(articles)}
+      Današnji datum: ${today || 'nepoznat'}
+`;
 
   const { GoogleGenAI, Type } = await import('@google/genai');
   const ai = new GoogleGenAI({ apiKey: geminiKey.value() });
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      // Gemini 3.1 Flash-Lite: brz i jeftin, dovoljan za popunjavanje fakture iz opisa.
+      model: 'gemini-3.1-flash-lite',
       contents: `Generiši podatke za fakturu na osnovu sljedećeg opisa.
       Opis: "${prompt}"
 
+${contextBlock}
       Pravila:
+      - Ako opis odgovara nekom poznatom klijentu (i približno, npr. skraćeni naziv), preuzmi njegov tačan naziv, adresu, ID broj i email iz popisa.
+      - Ako stavka odgovara poznatom artiklu, koristi njegov tačan naziv i standardnu cijenu, osim ako je u opisu navedena druga cijena.
       - Ako klijent ima adresu ili ID broj, uključi ih.
       - Za stavke, pokušaj prepoznati naziv, količinu i cijenu. Ako količina nije navedena, stavi 1.
       - Izračunaj ukupnu cijenu (total) za svaku stavku (količina * cijena).
@@ -209,6 +227,7 @@ exports.generateInvoice = onCall({ secrets: [geminiKey], timeoutSeconds: 60, max
             clientName: { type: Type.STRING, description: 'Naziv klijenta' },
             clientAddress: { type: Type.STRING, description: 'Adresa klijenta' },
             clientId: { type: Type.STRING, description: 'ID broj ili JIB klijenta' },
+            clientEmail: { type: Type.STRING, description: 'Email klijenta ako je poznat' },
             currency: { type: Type.STRING, description: 'Valuta fakture (BAM, EUR ili USD)' },
             items: {
               type: Type.ARRAY,
@@ -236,6 +255,11 @@ exports.generateInvoice = onCall({ secrets: [geminiKey], timeoutSeconds: 60, max
     return JSON.parse(response.text);
   } catch (error) {
     console.error('generateInvoice failed:', error);
+    // Besplatni Gemini ključ ima dnevni limit zahtjeva.
+    const msg = String((error && (error.message || error.status)) || '');
+    if ((error && (error.status === 429 || error.code === 429)) || /RESOURCE_EXHAUSTED|quota|rate limit/i.test(msg)) {
+      throw new HttpsError('resource-exhausted', 'Dnevni besplatni limit AI-ja je potrošen. Pokušajte sutra ili napravite fakturu ručno.');
+    }
     throw new HttpsError('internal', 'AI generisanje fakture nije uspjelo.');
   }
 });

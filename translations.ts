@@ -1,6 +1,7 @@
 export const translations = {
   BHS: {
     header: {
+      languageSwitchTitle: "Switch to English",
       nav: {
         home: 'Početna',
         isThisForYou: 'Da li je ovo za vas?',
@@ -13,6 +14,10 @@ export const translations = {
       mobileJezik: 'Jezik:',
     },
     home: {
+      leaveGoogleReview: "Ostavi Google recenziju",
+      googleLabel: "Google",
+      testimonialReadMore: "Pročitaj više",
+      sendEmailButton: "Pošalji e-mail",
       heroTitle: 'HabitPlus',
       heroMobileSubtitle: 'Vaš put ka životu bez nikotina\nPodrška za pojedince, kompanije i škole',
       heroMobileCta: 'Saznajte više',
@@ -297,6 +302,8 @@ export const translations = {
       ctaButton: 'Zakaži besplatan razgovor',
     },
     corporate: {
+      groupProgramLabel: "Grupni program",
+      durationLabel: "Trajanje",
       heroTitle: 'Zdrav tim je produktivan tim',
       heroSubtitle: 'Podržite uposlenike u prestanku pušenja i izgradnji zdravih navika.',
       heroButton: 'Zakaži konsultacije',
@@ -443,6 +450,9 @@ export const translations = {
       }
     },
     about: {
+      readMyStoryButton: "Pročitaj moju priču",
+      showMoreButton: "Prikaži više",
+      showLessButton: "Prikaži manje",
       heroTag: 'Upoznaj osnivačicu Renata Lačević',
       heroSubtitle: 'Naš pristup je praktičan, interaktivan i zasnovan na razumijevanju',
       credentials: [
@@ -503,6 +513,12 @@ export const translations = {
       aboutRenata: 'O Renati',
     },
     footer: {
+      socialHabitplusTitle: "HabitPlus",
+      socialRenataTitle: "Renata Lačević",
+      trBihLabel: "TR BiH:",
+      ibanUsdLabel: "IBAN USD:",
+      ibanEurLabel: "IBAN EUR:",
+      swiftLabel: "SWIFT:",
       tagline: 'Stručno vođeni programi prestanka pušenja i promjene navika. Vaš partner u izgradnji zdravijeg života.',
       programsTitle: 'Programi & linkovi',
       programs: ['Individualni rad', 'Intenzivni program', 'Novi početak', 'Za organizacije'],
@@ -525,6 +541,30 @@ export const translations = {
       },
     },
     cravingMode: {
+      anonymousName: "Anonimni",
+      resetTitle: "Resetuj napredak",
+      resetLabel: "Reset",
+      noticeTitle: "Prije nego počnemo",
+      noticeText: "Sve informacije (ime/nadimak i tvoj napredak) čuvaju se isključivo lokalno na tvom uređaju. Ni jedna informacija ne odlazi na naše servere.",
+      noticeItems: [
+        "• Nema registracije",
+        "• Nema dijeljenja podataka",
+        "• Možeš resetovati sve u bilo kom trenutku"
+      ],
+      noticeAccept: "Razumijem, kreni!",
+      nameTitle: "Kako da te zovemo?",
+      nameSubtitle: "Ime ili nadimak — samo da možemo personalizovati tvoj napredak.",
+      namePlaceholder: "Npr. Mirza, Zeko...",
+      nameStart: "Počni",
+      greeting: "Hej, {name} 👋",
+      victoryGreeting: "Bravo, {name}!",
+      savedUnit: "KM",
+      gainedUnit: "min",
+      co2Unit: "g",
+      savingsPerCigarette: 0.3,
+      co2SavedGramsPerCigarette: 14,
+      lifeGainedMinutesPerCigarette: 11,
+      timerSeconds: 300,
       triggerLabel: 'Isprobaj interaktivne igre za promjenu navike',
       title: 'Puši ti se?',
       subtitle: 'Žudnja traje samo 3–5 minuta. Prođi kroz ove korake.',
@@ -566,6 +606,26 @@ export const translations = {
       ],
     },
     savingsCalculator: {
+      stepOf: "Korak {step} od {total}",
+      stepUsageTitle: "Koliko trošiš?",
+      stepResultTitle: "Tvoja ušteda",
+      nextButton: "Dalje",
+      backButton: "Nazad",
+      showResultButton: "Prikaži uštedu",
+      restartButton: "Izračunaj ponovo",
+      productsLabel: "Šta koristiš? (možeš odabrati više)",
+      productCigarettes: "Cigarete",
+      productSnus: "Snus",
+      productVape: "Vape",
+      cigsPerDayLabel: "Cigareta na dan",
+      packPriceLabel: "Cijena kutije",
+      snusPerDayLabel: "Kesica na dan",
+      snusCanPriceLabel: "Cijena kutije snusa",
+      vapePodsPerWeekLabel: "Punjenja sedmično",
+      vapePodPriceLabel: "Cijena punjenja",
+      currencyUnit: "KM",
+      cravingPromoTitle: "Isprobaj interaktivne igre",
+      cravingPromoSubtitle: "Žudnja prolazi za 3–5 minuta. Pomozi sebi.",
       title: 'Kalkulator uštede',
       subtitle: 'Investiraj u sebe, ne u nikotin.',
       cigsLabel: 'Cigareta dnevno',
@@ -577,8 +637,16 @@ export const translations = {
       financialSavings: 'Finansijska ušteda',
       timeGained: 'Dobijeno vrijeme',
       daysSuffix: 'dana',
+      // Početne vrijednosti kalkulatora (mijenjaju se u adminu)
+      defaultCigsPerDay: 20,
+      defaultPackPrice: 6,
+      defaultSnusPerDay: 5,
+      defaultSnusCanPrice: 8,
+      defaultVapePodsPerWeek: 2,
+      defaultVapePodPrice: 15,
     },
     privacyPolicy: {
+      backButton: "Nazad",
       title: 'Politika privatnosti',
       intro: 'Vaša privatnost nam je važna. Ova politika privatnosti objašnjava kako prikupljamo, koristimo i štitimo vaše lične podatke kada koristite našu web stranicu ili nas kontaktirate putem forme, e-maila ili drugih komunikacijskih kanala.',
       sections: [
@@ -631,9 +699,150 @@ export const translations = {
       ibanEur: 'BA391941411342401215',
       swiftEur: 'MEBBBA22XXX',
     },
+    links: {
+      calendlyUrl: "https://calendly.com/contact-habitplus/15min",
+      googleReviewUrl: "https://g.page/r/CXsWmmOe8rKSEAI/review",
+      googleMapsUrl: "https://www.google.com/maps/place/HabitPlus/@43.9159842,17.6762169,8z/data=!3m1!4b1!4m6!3m5!1s0x6ecdc606410a6033:0x92b2f29e639a167b!8m2!3d43.9159842!4d17.6762169!16s%2Fg%2F11z1650pgb?entry=ttu&g_ep=EgoyMDI2MDUxMi4wIKXMDSoASAFQAw%3D%3D",
+      habitplusLinkedin: "https://www.linkedin.com/company/habitplus/",
+      habitplusInstagram: "https://www.instagram.com/habitplus.ba/",
+      habitplusFacebook: "https://www.facebook.com/profile.php?id=61584469727312",
+      renataLinkedin: "https://www.linkedin.com/in/renatalacevic/",
+      renataInstagram: "https://www.instagram.com/renatalacevic/",
+      renataFacebook: "https://www.facebook.com/renata.lacevic/",
+    },
+    seo: {
+      siteTitle: "HabitPlus | Programi za Timove i Tim Bilding | Sarajevo",
+      siteDescription: "HabitPlus nudi stručno vođene programe za timove, tim bilding i wellness za organizacije u Sarajevu. 18+ godina iskustva. Zdraviji, produktivniji timovi uz HabitPlus programe u Sarajevu.",
+    },
+    blogTexts: {
+      blogPageTitle: "HabitPlus Blog",
+      blogPageSubtitle: "Stručni članci, savjeti i najnovija saznanja o promjeni navika.",
+      noArticles: "Nema objavljenih članaka.",
+      coverPlaceholder: "HP",
+      readMore: "Pročitaj više",
+      sectionTitle: "Blog",
+      sectionSubtitle: "Istražite stručne članke, savjete i najnovija saznanja o promjeni navika.",
+      allArticles: "Svi članci",
+      backToBlog: "Nazad na blog",
+      defaultAuthor: "Renata Lačević",
+      authorRole: "Osnivačica HabitPlus",
+    },
+    contactForm: {
+      successTitle: "Poruka poslana!",
+      successMessage: "Hvala Vam. Javit ćemo Vam se u najkraćem mogućem roku.",
+      timeoutError: "Sporo povezivanje. Molimo pokušajte ponovo.",
+      genericError: "Došlo je do greške. Molimo pokušajte ponovo.",
+      sendingLabel: "Slanje...",
+    },
+    cookieBanner: {
+      title: "Koristimo kolačiće (cookies)",
+      text: "Koristimo kolačiće kako bismo poboljšali Vaše iskustvo na stranici. ",
+      decline: "Odbij",
+      acceptEssential: "Prihvati osnove",
+      acceptAll: "Prihvati sve",
+    },
+    newsletterPopup: {
+      successTitle: "Hvala na prijavi!",
+      successText: "Uskoro ćeš primati korisne savjete.",
+      emailPlaceholder: "tvoj@email.com",
+      sending: "Šaljem...",
+      error: "Greška. Pokušaj ponovo.",
+      dismiss: "Ne, hvala",
+    },
+    eventPopup: {
+      closeLabel: "Zatvori",
+    },
+    languagePicker: {
+      title: "Odaberite jezik",
+      languageName: "BHS",
+      desktopHint: "Za najbolje iskustvo koristite računar",
+    },
+    googleReviews: {
+      title: "Šta kažu naši klijenti na Google-u",
+      rating: "5.0",
+      basedOnReviews: "Zasnovano na više od 25 Google recenzija",
+      readMore: "Pročitaj više →",
+      leaveReview: "Ostavite recenziju",
+      viewOnGoogle: "Pogledaj na Google-u",
+      reviews: [
+        {
+          "author": "Lejla Saric",
+          "text": "Predan profesionalac, Renata pruža smjernice sa izuzetno ličnim i toplim pristupom."
+        },
+        {
+          "author": "Irma",
+          "text": "Znanje i iskustvo Renate su siguran put ka pozitivnoj promjeni u životu. Njena podrška i dostupnost tome neizmjerno doprinose."
+        },
+        {
+          "author": "Amra Seta",
+          "text": "Izuzetno profesionalno. Samo naprijed!"
+        },
+        {
+          "author": "Dženan Mulamuhić",
+          "text": "Imao sam priliku u određenom periodu raditi sa Renatom po ovoj temi i mogu reći da je na mene ostavila izuzetno pozitivan utisak. Njena profesionalnost, iskrenost i istinska posvećenost svom poslu su jasno vidljivi."
+        },
+        {
+          "author": "Azra H.Osmanović",
+          "text": "Čast je i zadovoljstvo imati priliku surađivati s divnom Renatom."
+        },
+        {
+          "author": "Sumeja Pasic",
+          "text": "HabitPlus se čini jednostavnim, jasnim i zaista korisnim za svakodnevni život. Renatin pristup je iskren, motivirajući i lak za primjenu u praksi, što cijelo iskustvo čini još vrijednijim."
+        },
+        {
+          "author": "Selma Tvrtković-Brulić",
+          "text": "Nježan, lijep pristup. Detaljna objašnjenja i razumijevanje. Iskrena preporuka!"
+        },
+        {
+          "author": "mirela mirela",
+          "text": "Ovo je nešto sasvim novo na našim prostorima. Nadam se da će uroditi plodom i probuditi zdrav razum mnogih, koji su korisnici raznih poroka."
+        },
+        {
+          "author": "jelena đukic",
+          "text": "Kada ti je potrebna podrška povjerenje daješ nekom. A taj Neko je naša Renata, osoba od povjerenja, stručna, posvećena. I program koji radi je detaljan i pruža provjerene metode."
+        },
+        {
+          "author": "Ajla Kokanović Čekić",
+          "text": "Renata je predivna osoba, puna razumijevanja i saosjećanja. Osjeti se njena ljubav prema poslu koji radi i iskrena želja da pomogne. Drago mi je da sam je upoznala 😊"
+        },
+        {
+          "author": "Irhad Strika",
+          "text": "Rad sa Renatom bio je izuzetno pozitivno i inspirativno iskustvo. Njena profesionalnost je na najvišem nivou, a ono po čemu se ističe je njena lična i profesionalna posvećenost koja zaista motiviše sve oko nje."
+        },
+        {
+          "author": "Ajna Čolić",
+          "text": "Na prvom mjestu, Renata je jako empatična osoba puna razumijevanja. Njena profesionalnost i iskustvo koje donosi u BiH su također nešto posebno i novo."
+        },
+        {
+          "author": "Amina Kovac",
+          "text": "Renata je osoba koja obasja prostor svojim prisustvom, toplinom i elokvencijom. Čast mi je da sam je upoznala."
+        },
+        {
+          "author": "Irena M",
+          "text": "Toplo preporučujem HabitPlus i izvanrednu Renatu Lačević svima koji su spremni napraviti prvi korak prema životu bez cigareta."
+        },
+        {
+          "author": "amelaa amela",
+          "text": "Iskrena preporuka. Odličan profesionalac."
+        },
+        {
+          "author": "Amela Čustović",
+          "text": "Uz iskrene čestitke na dosadašnjim postignućima, želim mnogo uspjeha, sreće i inspiracije u daljem radu i profesionalnom usavršavanju. Sve preporuke od srca."
+        },
+        {
+          "author": "Alma Kustric",
+          "text": "Renata nije samo izuzetan stručnjak, ona je i nježna, topla osoba sa kojom je zadovoljstvo raditi. Napravite prvi korak prema boljem zdravlju danas, odaberite sebe, nazovite Renatu i ostavite cigarete 🙏"
+        },
+        {
+          "author": "Sanela Ališahović",
+          "text": "Najveće preporuke od ❤️ imala sam priliku divne saradnje."
+        }
+      ],
+    },
   },
   EN: {
     header: {
+      languageSwitchTitle: "Prebaci na BHS",
       nav: {
         home: 'Home',
         isThisForYou: 'Is this for you?',
@@ -646,6 +855,10 @@ export const translations = {
       mobileJezik: 'Language:',
     },
     home: {
+      leaveGoogleReview: "Leave a Google review",
+      googleLabel: "Google",
+      testimonialReadMore: "Read more",
+      sendEmailButton: "Send e-mail",
       heroTitle: 'HabitPlus',
       heroMobileSubtitle: 'Your path to a nicotine-free life\nSupport for individuals, workplaces and schools',
       heroMobileCta: 'Learn more',
@@ -931,6 +1144,8 @@ export const translations = {
       ctaButton: 'Book a free consultation',
     },
     corporate: {
+      groupProgramLabel: "Group program",
+      durationLabel: "Duration",
       heroTitle: 'A healthy team is a productive team',
       heroSubtitle: 'Support your employees in quitting smoking and building healthy habits. Reduce sick leave, increase productivity and build a culture where health is not an option — it is a priority.',
       heroButton: 'Schedule a consultation',
@@ -1077,6 +1292,9 @@ export const translations = {
       }
     },
     about: {
+      readMyStoryButton: "Read my story",
+      showMoreButton: "View more",
+      showLessButton: "View less",
       heroTag: 'About Renata Lačević',
       heroSubtitle: 'Our approach is practical, interactive and based on understanding',
       credentials: [
@@ -1137,6 +1355,12 @@ export const translations = {
       aboutRenata: 'About Renata',
     },
     footer: {
+      socialHabitplusTitle: "HabitPlus",
+      socialRenataTitle: "Renata Lačević",
+      trBihLabel: "TR BiH:",
+      ibanUsdLabel: "IBAN USD:",
+      ibanEurLabel: "IBAN EUR:",
+      swiftLabel: "SWIFT:",
       tagline: 'Expert led smoking cessation and habit change programs. Your partner in building a healthier life.',
       programsTitle: 'Programs & links',
       programs: ['Individual support', 'Intensive program', 'New beginning', 'For organisations'],
@@ -1166,6 +1390,26 @@ export const translations = {
       close: 'Close',
     },
     savingsCalculator: {
+      stepOf: "Step {step} of {total}",
+      stepUsageTitle: "How much do you spend?",
+      stepResultTitle: "Your savings",
+      nextButton: "Next",
+      backButton: "Back",
+      showResultButton: "Show my savings",
+      restartButton: "Start over",
+      productsLabel: "What do you use? (select all that apply)",
+      productCigarettes: "Cigarettes",
+      productSnus: "Snus",
+      productVape: "Vape",
+      cigsPerDayLabel: "Cigarettes per day",
+      packPriceLabel: "Price per pack",
+      snusPerDayLabel: "Pouches per day",
+      snusCanPriceLabel: "Price per can",
+      vapePodsPerWeekLabel: "Pods per week",
+      vapePodPriceLabel: "Price per pod",
+      currencyUnit: "$",
+      cravingPromoTitle: "Try the interactive games",
+      cravingPromoSubtitle: "Cravings pass in 3–5 minutes. Help yourself.",
       title: 'Savings calculator',
       subtitle: 'Invest in yourself, not the nicotine',
       cigsLabel: 'Cigarettes, vapes, heated tobacco products (HTPs), snus',
@@ -1177,8 +1421,39 @@ export const translations = {
       financialSavings: 'Financial savings',
       timeGained: 'Time gained',
       daysSuffix: 'days',
+      // Početne vrijednosti kalkulatora (mijenjaju se u adminu)
+      defaultCigsPerDay: 20,
+      defaultPackPrice: 6,
+      defaultSnusPerDay: 5,
+      defaultSnusCanPrice: 8,
+      defaultVapePodsPerWeek: 2,
+      defaultVapePodPrice: 15,
     },
     cravingMode: {
+      anonymousName: "Anonymous",
+      resetTitle: "Reset progress",
+      resetLabel: "Reset",
+      noticeTitle: "Before we begin",
+      noticeText: "All information (your name/nickname and progress) is stored locally on your device only. Nothing is sent to our servers.",
+      noticeItems: [
+        "• No registration required",
+        "• No data sharing",
+        "• You can reset everything at any time"
+      ],
+      noticeAccept: "Got it, let's go!",
+      nameTitle: "What should we call you?",
+      nameSubtitle: "Name or nickname — just to personalise your progress.",
+      namePlaceholder: "E.g. Alex, Tiger...",
+      nameStart: "Start",
+      greeting: "Hey, {name} 👋",
+      victoryGreeting: "Well done, {name}!",
+      savedUnit: "BAM",
+      gainedUnit: "min",
+      co2Unit: "g",
+      savingsPerCigarette: 0.3,
+      co2SavedGramsPerCigarette: 14,
+      lifeGainedMinutesPerCigarette: 11,
+      timerSeconds: 300,
       triggerLabel: 'Try interactive games to change your habit',
       title: 'Feeling a craving?',
       subtitle: 'A craving only lasts 3–5 minutes. Work through these steps.',
@@ -1220,6 +1495,7 @@ export const translations = {
       ],
     },
     privacyPolicy: {
+      backButton: "Back",
       title: 'Privacy policy',
       intro: 'Your privacy is important to us. This privacy policy explains how we collect, use, and protect your personal data when you use our website or contact us via form, e-mail, or other communication channels.',
       sections: [
@@ -1271,6 +1547,146 @@ export const translations = {
       swiftUsd: 'MEBBBA22XXX',
       ibanEur: 'BA391941411342401215',
       swiftEur: 'MEBBBA22XXX',
+    },
+    links: {
+      calendlyUrl: "https://calendly.com/contact-habitplus/15min",
+      googleReviewUrl: "https://g.page/r/CXsWmmOe8rKSEAI/review",
+      googleMapsUrl: "https://www.google.com/maps/place/HabitPlus/@43.9159842,17.6762169,8z/data=!3m1!4b1!4m6!3m5!1s0x6ecdc606410a6033:0x92b2f29e639a167b!8m2!3d43.9159842!4d17.6762169!16s%2Fg%2F11z1650pgb?entry=ttu&g_ep=EgoyMDI2MDUxMi4wIKXMDSoASAFQAw%3D%3D",
+      habitplusLinkedin: "https://www.linkedin.com/company/habitplus/",
+      habitplusInstagram: "https://www.instagram.com/habitplus.ba/",
+      habitplusFacebook: "https://www.facebook.com/profile.php?id=61584469727312",
+      renataLinkedin: "https://www.linkedin.com/in/renatalacevic/",
+      renataInstagram: "https://www.instagram.com/renatalacevic/",
+      renataFacebook: "https://www.facebook.com/renata.lacevic/",
+    },
+    seo: {
+      siteTitle: "HabitPlus | Team Programs and Team Building | Sarajevo",
+      siteDescription: "HabitPlus offers expert-led programs for teams, team building and workplace wellness in Sarajevo. 18+ years of experience. Healthier, more productive teams with HabitPlus.",
+    },
+    blogTexts: {
+      blogPageTitle: "HabitPlus Blog",
+      blogPageSubtitle: "Expert articles, tips, and the latest insights on habit change.",
+      noArticles: "No published articles found.",
+      coverPlaceholder: "HP",
+      readMore: "Read more",
+      sectionTitle: "Blog",
+      sectionSubtitle: "Explore expert articles, tips, and the latest insights on habit change.",
+      allArticles: "All articles",
+      backToBlog: "Back to blog",
+      defaultAuthor: "Renata Lačević",
+      authorRole: "Founder of HabitPlus",
+    },
+    contactForm: {
+      successTitle: "Message Sent!",
+      successMessage: "Thank you. We will get back to you as soon as possible.",
+      timeoutError: "Connection timeout. Please try again.",
+      genericError: "An error occurred. Please try again.",
+      sendingLabel: "Sending...",
+    },
+    cookieBanner: {
+      title: "We use cookies",
+      text: "We use cookies to improve your experience on our website. ",
+      decline: "Decline",
+      acceptEssential: "Essential only",
+      acceptAll: "Accept all",
+    },
+    newsletterPopup: {
+      successTitle: "Thanks for subscribing!",
+      successText: "You'll receive helpful tips soon.",
+      emailPlaceholder: "your@email.com",
+      sending: "Sending...",
+      error: "Error. Please try again.",
+      dismiss: "No thanks",
+    },
+    eventPopup: {
+      closeLabel: "Close",
+    },
+    languagePicker: {
+      title: "Choose your language",
+      languageName: "English",
+      desktopHint: "For the best experience use desktop",
+    },
+    googleReviews: {
+      title: "What our clients say on Google",
+      rating: "5.0",
+      basedOnReviews: "Based on over 25 Google reviews",
+      readMore: "Read more →",
+      leaveReview: "Leave a review too",
+      viewOnGoogle: "View on Google",
+      reviews: [
+        {
+          "author": "Lejla Saric",
+          "text": "A dedicated professional, Renata provides guidance with a remarkably personal and warm touch"
+        },
+        {
+          "author": "Irma",
+          "text": "Renata's knowledge and experience are a sure way to a positive change in life. Her support and accessibility contribute immensely to this."
+        },
+        {
+          "author": "Amra Seta",
+          "text": "Extremely professional. Go ahead!"
+        },
+        {
+          "author": "Dženan Mulamuhić",
+          "text": "I had the opportunity to work with Renata on this topic for a period of time and I can say that she left an extremely positive impression on me. Her professionalism, honesty and genuine dedication to her work are clearly visible."
+        },
+        {
+          "author": "Azra H.Osmanović",
+          "text": "It is an honor and pleasure to have had the opportunity to collaborate with the wonderful Renata."
+        },
+        {
+          "author": "Sumeja Pasic",
+          "text": "HabitPlus seems simple, clear and really useful for everyday life. Renata's approach is honest, motivating and easy to apply in practice, which makes the whole experience even more valuable."
+        },
+        {
+          "author": "Selma Tvrtković-Brulić",
+          "text": "Gentle, nice approach. Detailed explanations and understanding. A sincere recommendation!"
+        },
+        {
+          "author": "mirela mirela",
+          "text": "This is something completely new in our region. I hope it will bear fruit and awaken the common sense of many, who are the beneficiaries of various vices."
+        },
+        {
+          "author": "jelena đukic",
+          "text": "When you need support, you give your trust to someone. And that Someone is our Renata, a trustworthy, professional, dedicated person. And the program that works is detailed and provides proven methods."
+        },
+        {
+          "author": "Ajla Kokanović Čekić",
+          "text": "Renata is a wonderful person, full of understanding and compassion. You can feel her love for the work she does and her sincere desire to help. I am glad I met her 😊"
+        },
+        {
+          "author": "Irhad Strika",
+          "text": "Working with Renata was an extremely positive and inspiring experience. Her professionalism is at the highest level, and what makes her stand out is her personal and professional dedication that truly motivates everyone around her."
+        },
+        {
+          "author": "Ajna Čolić",
+          "text": "First of all, Renata is a very empathetic person, full of understanding. Her professionalism and experience that she brings to BiH is also something special and new."
+        },
+        {
+          "author": "Amina Kovac",
+          "text": "Renata is a person who lights up a space with her presence, warmth, and eloquence. I am honored to have met her."
+        },
+        {
+          "author": "Irena M",
+          "text": "I highly recommend HabitPlus and the extraordinary Renata Lačević to everyone who is ready to take the first step towards a life without cigarettes."
+        },
+        {
+          "author": "amelaa amela",
+          "text": "A sincere recommendation. A great professional."
+        },
+        {
+          "author": "Amela Čustović",
+          "text": "With sincere congratulations on your achievements so far, I wish you much success, happiness and inspiration in your further work and professional development. All recommendations from the heart."
+        },
+        {
+          "author": "Alma Kustric",
+          "text": "Renata is not only an exceptional expert, she is also a gentle, warm person who is a pleasure to work with. Take the first step towards better health today, choose yourself, call Renata and give up cigarettes 🙏"
+        },
+        {
+          "author": "Sanela Ališahović",
+          "text": "The biggest recommendations from ❤️ I had the opportunity of a wonderful collaboration."
+        }
+      ],
     },
   }
 };

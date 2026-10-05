@@ -1,8 +1,76 @@
 rules_version = '2';
+
+// Admin = prijavljeni Firebase korisnik čiji email postoji kao dokument u kolekciji "admins".
+// Dokument se dodaje ručno u Firebase konzoli: admins/{email} (email malim slovima).
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null && request.auth.token.email != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower()));
+    }
+
+    function isShortString(v, max) {
+      return v is string && v.size() <= max;
+    }
+
+    // Popis administratora: svako vidi samo svoj zapis, pisanje samo iz konzole.
+    match /admins/{email} {
+      allow read: if signedIn() && request.auth.token.email.lower() == email;
+      allow write: if false;
+    }
+
+    // Javni sadržaj stranice: svi čitaju, samo admin mijenja.
+    match /website_content/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /popups/{popupId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Kontakt forma: posjetitelj smije samo poslati poruku, čita je samo admin.
+    match /submissions/{docId} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'program', 'message', 'lang', 'timestamp'])
+        && isShortString(request.resource.data.name, 200)
+        && isShortString(request.resource.data.email, 200)
+        && isShortString(request.resource.data.message, 5000);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Newsletter: posjetitelj smije samo upisati email, čita ga samo admin.
+    match /newsletter/{docId} {
+      allow create: if request.resource.data.keys().hasOnly(['email', 'lang', 'source', 'createdAt', 'timestamp'])
+        && isShortString(request.resource.data.email, 200);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Fakture i sve uz njih: isključivo admin.
+    match /invoices/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /invoice_clients/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /invoice_articles/{docId} {
+      allow read, write: if isAdmin();
+    }
+    match /invoice_settings/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Sve ostalo je zatvoreno.
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if false;
     }
   }
 }

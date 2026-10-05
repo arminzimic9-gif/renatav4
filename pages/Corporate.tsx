@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSiteImage, useSiteImageList, bgStyle, posVars } from '../context/SiteImagesContext';
 import { Footer } from '../components/Footer';
 import { Button } from '../components/Button';
 import { Briefcase, TrendingUp, Users, CheckCircle, BookOpen, UserPlus, Target, ChevronDown, ArrowRight } from 'lucide-react';
@@ -28,6 +29,8 @@ const BenefitCard: React.FC<{ benefit: any, Icon: any, delay: number }> = ({ ben
 };
 
 export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => void }> = ({ onNavigate }) => {
+   const heroBg = useSiteImage('corporateHero');
+   const collabBg = useSiteImage('corporateCollab');
    const timelineRef = useRef<HTMLDivElement>(null);
    const [progress, setProgress] = useState(0);
    const { lang, dict } = useLanguage();
@@ -65,28 +68,28 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
    return (
       <div className="min-h-screen flex flex-col font-sans text-brand-text bg-white selection:bg-brand-blue selection:text-white">
          {/* 1. CORPORATE HERO */}
-         <section className="relative lg:min-h-screen h-[100svh] flex items-center justify-center overflow-hidden w-full" style={{ width: '100vw', marginLeft: 'calc(50% - 50vw)' }}>
+         <section className="relative min-h-[75svh] pt-28 pb-16 lg:pt-0 lg:pb-0 lg:h-[100svh] lg:min-h-screen flex items-center justify-center overflow-hidden w-full">
             <div className="absolute inset-0 z-0">
-               <div className="absolute inset-0 bg-[url('/SL__8066.jpg')] bg-cover bg-center" style={{ backgroundPosition: 'center 30%' }} />
+               <div className="hp-pos absolute inset-0 bg-cover" style={bgStyle(heroBg)} />
             </div>
 
             <div className="absolute inset-0 bg-brand-blue opacity-80" />
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
             
-            <div className={`w-full max-w-[1440px] mx-auto px-6 relative z-10 text-center flex flex-col items-center justify-center transition-all duration-1000 translate-y-12 ${heroVisible ? 'opacity-100' : 'opacity-0'}`} ref={heroRef}>
+            <div className={`w-full max-w-[1440px] mx-auto px-6 relative z-10 text-center flex flex-col items-center justify-center transition-all duration-1000 lg:translate-y-12 ${heroVisible ? 'opacity-100' : 'opacity-0'}`} ref={heroRef}>
                <WordReveal 
                   text={t.heroTitle} 
                   center
-                  className="text-4xl md:text-5xl lg:text-7xl font-serif font-extrabold tracking-tight leading-tight mb-8 text-white"
+                  className="text-4xl md:text-5xl lg:text-7xl font-serif font-extrabold tracking-tight leading-tight mb-5 md:mb-8 text-white"
                />
-               <p className="text-white/90 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-10 font-medium">
+               <p className="text-white/90 text-base sm:text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-10 font-medium">
                   {t.heroSubtitle}
                </p>
                <Button
                   variant="white"
                   size="lg"
                   withArrow
-                  onClick={() => window.open('https://calendly.com/contact-habitplus/15min', '_blank')}
+                  onClick={() => window.open(dict.BHS.links.calendlyUrl, '_blank')}
                >
                   {t.heroButton}
                </Button>
@@ -105,9 +108,9 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                   <WordReveal 
                     text={t.whyTitle}
                     center
-                    className="text-4xl md:text-6xl lg:text-7xl font-serif font-extrabold text-brand-blue mb-6 leading-tight tracking-tight"
+                    className="text-3xl md:text-6xl lg:text-7xl font-serif font-extrabold text-brand-blue mb-6 leading-tight tracking-tight"
                   />
-                  <p className="text-gray-500 max-w-2xl mx-auto text-xl leading-relaxed">{t.whySubtitle}</p>
+                  <p className="text-gray-500 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">{t.whySubtitle}</p>
                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
@@ -129,7 +132,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
          </section>
 
          {/* 3. SARADNJA - TIMELINE GRID */}
-         <section className="py-24 md:py-32 relative overflow-hidden bg-cover bg-center bg-fixed" style={{ backgroundImage: "url('/SL__8066.jpg')", width: '100vw', marginLeft: 'calc(50% - 50vw)' }}>
+         <section className="hp-pos py-24 md:py-32 relative overflow-hidden w-full bg-cover lg:bg-fixed" style={bgStyle(collabBg)}>
             <div className="absolute inset-0 bg-brand-blue/95" />
             <div className="w-full max-w-5xl mx-auto px-6 md:px-8 relative z-10">
                <div className={`text-center mb-16 transition-all duration-1000 ${collabVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} ref={collabRef}>
@@ -144,7 +147,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                   </p>
                </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-5" style={{ gridAutoRows: '1fr' }}>
+               <div className="grid grid-cols-1 md:grid-cols-2 md:auto-rows-fr gap-5">
                   {t.collabSteps.map((item) => {
                      const IconMap: { [key: string]: any } = {
                         '01': Users,
@@ -154,14 +157,14 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                      };
                      const Icon = IconMap[item.num] || Users;
                      return (
-                        <div key={item.num} className="bg-white border border-gray-100 shadow-xl rounded-[1.5rem] p-6 flex flex-row items-start gap-6 min-h-[110px]">
+                        <div key={item.num} className="bg-white border border-gray-100 shadow-xl rounded-[1.5rem] p-5 sm:p-6 flex flex-row items-start gap-4 sm:gap-6 min-h-[110px]">
                            <div className="shrink-0 flex flex-col items-center gap-2 pt-1">
-                              <span className="text-[#94a3b8] font-bold text-[10px] tracking-widest">{item.num}</span>
-                              <div className="w-14 h-14 bg-gray-50 text-brand-blue rounded-xl flex items-center justify-center">
+                              <span className="text-slate-500 font-bold text-xs tracking-widest">{item.num}</span>
+                              <div className="w-11 h-11 sm:w-14 sm:h-14 bg-gray-50 text-brand-blue rounded-xl flex items-center justify-center">
                                  <Icon size={22} strokeWidth={1.5} />
                               </div>
                            </div>
-                           <div className="w-px self-stretch bg-gray-100 shrink-0" />
+                           <div className="hidden sm:block w-px self-stretch bg-gray-100 shrink-0" />
                            <div className="flex-1 min-w-0">
                               <h4 className="text-lg font-bold text-brand-dark mb-1">{item.title}</h4>
                               <p className="text-gray-500 leading-relaxed text-sm">{item.text}</p>
@@ -181,7 +184,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                      <WordReveal 
                         text={t.programsTitle} 
                         center
-                        className="text-4xl md:text-6xl lg:text-7xl font-serif font-extrabold text-brand-blue mb-6"
+                        className="text-3xl md:text-6xl lg:text-7xl font-serif font-extrabold text-brand-blue mb-6"
                      />
                      <p className="text-gray-600 text-lg md:text-xl leading-relaxed">
                         {t.programsSubtitle}
@@ -192,7 +195,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                      {t.programs.map((prog, idx) => {
                         if (idx === 0) { // Edukativni
                            return (
-                              <div key={idx} className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm hover:shadow-lg transition-all line-height-relaxed">
+                              <div key={idx} className="bg-white rounded-3xl p-6 md:p-10 border border-gray-100 shadow-sm hover:shadow-lg transition-all line-height-relaxed">
                                  <div className="flex justify-between items-start mb-6">
                                     <div className="w-14 h-14 bg-brand-blue/10 text-brand-blue rounded-2xl flex items-center justify-center">
                                        <BookOpen size={28} />
@@ -219,7 +222,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                            );
                         } else if (idx === 1) { // Intenzivni
                            return (
-                              <div key={idx} className="bg-white rounded-3xl p-10 border border-brand-teal/20 shadow-sm hover:shadow-lg transition-all relative overflow-hidden">
+                              <div key={idx} className="bg-white rounded-3xl p-6 md:p-10 border border-brand-teal/20 shadow-sm hover:shadow-lg transition-all relative overflow-hidden">
                                  <div className="absolute top-0 right-0 w-32 h-32 bg-brand-teal/5 rounded-bl-[100px] -z-10"></div>
                                  <div className="flex justify-between items-start mb-6">
                                     <div className="w-14 h-14 bg-brand-teal/10 text-brand-teal rounded-2xl flex items-center justify-center">
@@ -232,7 +235,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                                  </div>
                                  <h4 className="text-2xl font-bold text-brand-dark mb-1">{prog.title}</h4>
                                  <p className="text-sm font-bold text-brand-teal mb-4 tracking-wider uppercase">
-                                    {lang === 'EN' ? 'Group program' : 'Grupni program'}
+                                    {t.groupProgramLabel}
                                  </p>
                                  <p className="text-gray-600 mb-6 border-b border-gray-100 pb-6">{prog.desc}</p>
                                  <h5 className="font-bold text-brand-dark mb-4">{prog.itemsTitle}</h5>
@@ -250,7 +253,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                            );
                         } else if (idx === 2) { // Novi pocetak
                            return (
-                              <div key={idx} className="bg-brand-blue text-white rounded-3xl p-10 shadow-premium hover:-translate-y-1 transition-all md:col-span-2 relative overflow-hidden">
+                              <div key={idx} className="bg-brand-blue text-white rounded-3xl p-6 md:p-10 shadow-premium hover:-translate-y-1 transition-all md:col-span-2 relative overflow-hidden">
                                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
                                  <div className="relative z-10 flex flex-col md:flex-row gap-8">
                                     <div className="md:w-1/2">
@@ -265,7 +268,7 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                                        </div>
                                        <h4 className="text-3xl font-serif font-bold mb-1">{prog.title}</h4>
                                        <p className="text-sm font-bold text-brand-tealLight mb-4 tracking-wider uppercase">
-                                          {lang === 'EN' ? 'Group program' : 'Grupni program'}
+                                          {t.groupProgramLabel}
                                        </p>
                                        <p className="text-white/80 text-lg leading-relaxed mb-6">{prog.desc}</p>
                                     </div>
@@ -287,14 +290,14 @@ export const Corporate: React.FC<{ onNavigate: (page: Page, lang: Language) => v
                            );
                         } else if (idx === 3) { // Individualna
                            return (
-                              <div key={idx} className="bg-white rounded-3xl p-10 border border-gray-100 shadow-sm hover:shadow-lg transition-all md:col-span-2 flex flex-col md:flex-row gap-8 items-center">
+                              <div key={idx} className="bg-white rounded-3xl p-6 md:p-10 border border-gray-100 shadow-sm hover:shadow-lg transition-all md:col-span-2 flex flex-col md:flex-row gap-8 items-center">
                                  <div className="md:w-1/3 text-center md:text-left relative">
-                                    <div className="flex justify-start items-start mb-6 md:absolute md:top-0 md:left-0">
+                                    <div className="flex justify-center md:justify-start items-start mb-6 md:absolute md:top-0 md:left-0">
                                        <span className="inline-block px-3 py-1 bg-brand-stone text-brand-dark rounded-full text-sm font-bold">
-                                          {lang === 'EN' ? 'Duration' : 'Trajanje'} {prog.duration}
+                                          {t.durationLabel} {prog.duration}
                                        </span>
                                     </div>
-                                    <h4 className="text-2xl font-serif font-bold text-brand-dark mb-4 mt-12 md:mt-10">{prog.title}</h4>
+                                    <h4 className="text-2xl font-serif font-bold text-brand-dark mb-4 mt-0 md:mt-10">{prog.title}</h4>
                                     <p className="text-gray-600 mb-6">{prog.desc}</p>
                                  </div>
                                  <div className="md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">

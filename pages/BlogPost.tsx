@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSiteImage, useSiteImageList, bgStyle, posVars } from '../context/SiteImagesContext';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { Footer } from '../components/Footer';
@@ -11,8 +12,10 @@ interface BlogPostProps {
 }
 
 export const BlogPost: React.FC<BlogPostProps> = ({ onNavigate }) => {
+  const authorImg = useSiteImage('blogAuthor');
   const { slug } = useParams<{ slug: string }>();
-  const { lang } = useLanguage();
+  const { lang, dict } = useLanguage();
+  const bt = dict[lang].blogTexts;
   const navigate = useNavigate();
   const isBHS = lang === 'BHS';
   
@@ -42,7 +45,8 @@ export const BlogPost: React.FC<BlogPostProps> = ({ onNavigate }) => {
     fetchBlog();
     
     // Cleanup title on unmount
-    return () => { document.title = 'HabitPlus'; };
+    // Vrati naslov stranice iz admina (SEO) kad se napusti objava
+    return () => { document.title = (dict as any)[lang]?.seo?.siteTitle || 'HabitPlus'; };
   }, [slug, lang, navigate, isBHS]);
 
   if (loading) {
@@ -64,14 +68,14 @@ export const BlogPost: React.FC<BlogPostProps> = ({ onNavigate }) => {
         
         <Link 
           to={isBHS ? '/blog' : '/en-blog'} 
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-blue font-medium mb-10 transition-colors"
+          className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-blue font-medium mb-6 md:mb-10 transition-colors"
         >
           <ArrowLeft size={18} />
-          {isBHS ? 'Nazad na blog' : 'Back to blog'}
+          {bt.backToBlog}
         </Link>
 
         {blog.coverImage && (
-          <div className="w-full h-[400px] md:h-[500px] rounded-[2.5rem] overflow-hidden mb-12 shadow-sm border border-gray-100">
+          <div className="w-full aspect-[16/10] md:aspect-auto md:h-[500px] rounded-3xl md:rounded-[2.5rem] overflow-hidden mb-8 md:mb-12 shadow-sm border border-gray-100">
             <img 
               src={blog.coverImage} 
               alt={displayData.title} 
@@ -101,17 +105,17 @@ export const BlogPost: React.FC<BlogPostProps> = ({ onNavigate }) => {
 
           {/* HTML Content Render */}
           <div 
-            className="prose prose-lg max-w-none text-gray-600 space-y-6 prose-headings:font-serif prose-headings:text-brand-dark prose-a:text-brand-blue prose-img:rounded-2xl prose-p:leading-relaxed"
+            className="prose prose-base md:prose-lg max-w-none text-gray-600 space-y-6 [&_iframe]:max-w-full [&_table]:block [&_table]:overflow-x-auto prose-headings:font-serif prose-headings:text-brand-dark prose-a:text-brand-blue prose-img:rounded-2xl prose-p:leading-relaxed"
             dangerouslySetInnerHTML={{ __html: displayData.content }}
           />
 
           {/* Author Block */}
           <div className="mt-16 pt-8 border-t border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <img src="/renata-about-2.jpg" alt={blog.author} className="w-16 h-16 rounded-full object-cover border-2 border-brand-blue/10 shadow-sm" />
+              <img src={authorImg.url} alt={blog.author} className="hp-pos w-16 h-16 rounded-full object-cover border-2 border-brand-blue/10 shadow-sm" style={posVars(authorImg)} />
               <div>
-                <p className="text-lg font-bold text-brand-dark">{blog.author || 'Renata Lačević'}</p>
-                <p className="text-sm text-gray-500">{isBHS ? 'Osnivačica HabitPlus' : 'Founder of HabitPlus'}</p>
+                <p className="text-lg font-bold text-brand-dark">{blog.author || bt.defaultAuthor}</p>
+                <p className="text-sm text-gray-500">{bt.authorRole}</p>
               </div>
             </div>
             

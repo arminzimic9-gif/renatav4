@@ -12,7 +12,8 @@ interface BlogProps {
 }
 
 export const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
-  const { lang } = useLanguage();
+  const { lang, dict } = useLanguage();
+  const bt = dict[lang].blogTexts;
   const navigate = useNavigate();
   const isBHS = lang === 'BHS';
   const [blogs, setBlogs] = useState<BlogType[]>([]);
@@ -33,20 +34,18 @@ export const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-brand-cream flex flex-col pt-24">
+    <div className="min-h-screen bg-brand-cream flex flex-col pt-28 md:pt-24">
       <div className="flex-1 max-w-7xl mx-auto px-6 w-full pb-24">
         
         {/* Header */}
         <div className="text-center mb-16 relative">
           <WordReveal 
-            text={isBHS ? 'HabitPlus Blog' : 'HabitPlus Blog'}
+            text={bt.blogPageTitle}
             center
             className="text-4xl md:text-5xl font-serif font-bold text-brand-blue mb-4"
           />
           <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-            {isBHS 
-              ? 'Stručni članci, savjeti i najnovija saznanja o promjeni navika.' 
-              : 'Expert articles, tips, and the latest insights on habit change.'}
+            {bt.blogPageSubtitle}
           </p>
         </div>
 
@@ -57,7 +56,7 @@ export const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
           </div>
         ) : blogs.length === 0 ? (
           <div className="text-center py-20 text-gray-500">
-            {isBHS ? 'Nema objavljenih članaka.' : 'No published articles found.'}
+            {bt.noArticles}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
@@ -82,7 +81,7 @@ export const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                        <span className="text-gray-300 font-serif text-4xl">HP</span>
+                        <span className="text-gray-300 font-serif text-4xl">{bt.coverPlaceholder}</span>
                       </div>
                     )}
                   </div>
@@ -106,7 +105,7 @@ export const Blog: React.FC<BlogProps> = ({ onNavigate }) => {
                     </p>
                     
                     <div className="flex items-center text-brand-blue text-sm font-bold gap-2 mt-auto group-hover:gap-3 transition-all">
-                      {isBHS ? 'Pročitaj više' : 'Read more'} <ArrowRight size={16} />
+                      {bt.readMore} <ArrowRight size={16} />
                     </div>
                   </div>
                 </div>

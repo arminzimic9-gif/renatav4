@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSiteImage, useSiteImageList, bgStyle, posVars } from '../context/SiteImagesContext';
 import { Footer } from '../components/Footer';
 import { Button } from '../components/Button';
 import { ArrowLeft, Award, BookOpen, Heart, Globe, Briefcase, Star, Quote, Mail, Calendar, Shield, Brain, Scale, Tv, Radio, FileText, ExternalLink, X, ChevronDown, GraduationCap, Building2, Target, Sparkles, Zap } from 'lucide-react';
@@ -32,15 +33,9 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
     const [selectedCategory, setSelectedCategory] = useState<'tv' | 'radio' | 'articles' | null>(null);
     const [visibleImages, setVisibleImages] = useState(3);
 
-    const galleryImages = [
-        // Ovdje je zamijenjen redoslijed prve dvije slike (druga iteracija):
-        { src: '/renata-about-3.jpg', alt: 'Renata Lačević' },
-        { src: '/hero-2.jpg', alt: 'HabitPlus Sessions' },
-        { src: '/renata-about-1.jpg', alt: 'Health Education' },
-        { src: '/hero-1.jpg', alt: 'Individual Support' },
-        { src: '/renata-about-2.jpg', alt: 'Workshop Facilitation' },
-        { src: '/SL__8066.jpg', alt: 'HabitPlus Office' }
-    ];
+    // Galerija i pozadina dolaze iz admina (Admin → Slike).
+    const galleryImages = useSiteImageList('aboutGallery');
+    const heroBg = useSiteImage('aboutHero');
 
     const openCategory = (cat: 'tv' | 'radio' | 'articles') => {
         setSelectedCategory(cat);
@@ -58,30 +53,30 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
     return (
         <div className="min-h-screen flex flex-col font-sans text-brand-text bg-brand-cream selection:bg-brand-blue selection:text-white">
             {/* 1. HERO SECTION */}
-            <section className="relative lg:min-h-screen h-[100svh] flex items-center justify-center overflow-hidden w-full" style={{ width: '100vw', marginLeft: 'calc(50% - 50vw)' }}>
+            <section className="relative min-h-[75svh] pt-28 pb-16 lg:pt-0 lg:pb-0 lg:h-[100svh] lg:min-h-screen flex items-center justify-center overflow-hidden w-full">
                 {/* Background photo */}
                 <div
-                    className="absolute inset-0 bg-cover bg-no-repeat"
-                    style={{ backgroundImage: 'url(/hero-1.jpg)', backgroundPosition: 'center 30%' }}
+                    className="hp-pos absolute inset-0 bg-cover bg-no-repeat"
+                    style={bgStyle(heroBg)}
                 />
                 {/* Blue overlay at 90% opacity */}
                 <div className="absolute inset-0 bg-brand-blue opacity-90" />
                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
 
-                <div className={`w-full max-w-[1440px] mx-auto px-6 relative z-10 text-center flex flex-col items-center justify-center transition-all duration-1000 translate-y-12 ${heroVisible ? 'opacity-100' : 'opacity-0'}`} ref={heroRef}>
+                <div className={`w-full max-w-[1440px] mx-auto px-6 relative z-10 text-center flex flex-col items-center justify-center transition-all duration-1000 lg:translate-y-12 ${heroVisible ? 'opacity-100' : 'opacity-0'}`} ref={heroRef}>
                     <WordReveal 
                         text={t.heroTag} 
                         center
-                        className="text-4xl md:text-5xl lg:text-7xl font-serif font-extrabold tracking-tight leading-tight mb-8 text-white"
+                        className="text-4xl md:text-5xl lg:text-7xl font-serif font-extrabold tracking-tight leading-tight mb-5 md:mb-8 text-white"
                     />
-                    <p className="text-white/90 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-10 font-medium opacity-90">
+                    <p className="text-white/90 text-base sm:text-lg md:text-2xl max-w-3xl mx-auto leading-relaxed mb-10 font-medium opacity-90">
                         {t.heroSubtitle}
                     </p>
 
                     <Button variant="white" size="lg" withArrow onClick={() => {
                         document.getElementById('put-i-vizija')?.scrollIntoView({ behavior: 'smooth' });
                     }}>
-                        {lang === 'BHS' ? 'Pročitaj moju priču' : 'Read my story'}
+                        {t.readMyStoryButton}
                     </Button>
                 </div>
 
@@ -95,7 +90,7 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
             <div className="relative z-20 -mt-12 max-w-5xl mx-auto px-6">
                 <div 
                     ref={credRef}
-                    className={`grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-1000 ${credVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+                    className={`grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 transition-all duration-1000 ${credVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
                 >
                     {[
                         { icon: Brain, text: t.credentials[0], delay: '0s' },
@@ -104,10 +99,10 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
                     ].map((item, idx) => (
                         <div 
                             key={idx}
-                            className="bg-white rounded-2xl p-8 shadow-xl shadow-brand-blue/5 border border-brand-blue/5 flex flex-col items-center text-center group hover:-translate-y-2 transition-transform duration-500"
+                            className="bg-white rounded-2xl p-5 md:p-8 shadow-xl shadow-brand-blue/5 border border-brand-blue/5 flex flex-row md:flex-col items-center text-left md:text-center gap-4 md:gap-0 group hover:-translate-y-2 transition-transform duration-500"
                             style={{ transitionDelay: item.delay }}
                         >
-                            <div className="w-14 h-14 bg-brand-cream rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-brand-blue group-hover:text-white transition-all duration-500 text-brand-blue">
+                            <div className="w-12 h-12 md:w-14 md:h-14 shrink-0 bg-brand-cream rounded-xl flex items-center justify-center mb-0 md:mb-6 group-hover:scale-110 group-hover:bg-brand-blue group-hover:text-white transition-all duration-500 text-brand-blue">
                                 <item.icon size={28} />
                             </div>
                             <p className="font-serif font-bold text-brand-dark/80 text-lg leading-snug">
@@ -213,17 +208,17 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
             </section>
 
             {/* 3. QUOTE / VALUES */}
-            <section className="py-24 md:py-32 relative overflow-hidden bg-brand-blue flex items-center justify-center min-h-[500px]">
+            <section className="py-16 md:py-32 relative overflow-hidden bg-brand-blue flex items-center justify-center md:min-h-[500px]">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/[0.05] rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
                 <div className={`max-w-[760px] mx-auto px-6 relative z-10 text-center flex flex-col items-center transition-all duration-1000 ${quoteVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`} ref={quoteRef}>
-                    <Quote size={42} strokeWidth={2.5} className="text-white mb-12 opacity-80" />
+                    <Quote size={42} strokeWidth={2.5} className="text-white mb-8 md:mb-12 opacity-80" />
                     <WordReveal 
                         text={t.quote}
                         center
-                        className="text-[28px] md:text-[36px] font-sans font-medium text-white leading-[1.3] tracking-tight mb-16 px-4"
+                        className="text-[28px] md:text-[36px] font-sans font-medium text-white leading-[1.3] tracking-tight mb-8 md:mb-16 px-4"
                     />
                     <div className="w-12 h-[1px] bg-white/30 mb-6"></div>
-                    <p className="font-bold text-white uppercase tracking-[0.2em] text-[11px]">{t.quoteAuthor}</p>
+                    <p className="font-bold text-white uppercase tracking-[0.2em] text-xs">{t.quoteAuthor}</p>
                 </div>
             </section>
 
@@ -241,13 +236,15 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8 mb-12">
                         {galleryImages.slice(0, visibleImages).map((img, i) => (
-                            <div key={i} className="aspect-square bg-brand-stone rounded-[2rem] overflow-hidden group relative shadow-lg shadow-brand-blue/5 border border-brand-blue/5 animate-in fade-in zoom-in duration-500">
+                            <div key={i} className="aspect-square bg-brand-stone rounded-2xl md:rounded-[2rem] overflow-hidden group relative shadow-lg shadow-brand-blue/5 border border-brand-blue/5 animate-in fade-in zoom-in duration-500">
                                 <img 
-                                    src={img.src} 
-                                    alt={img.alt} 
-                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    src={img.url} 
+                                    alt={img.alt || 'HabitPlus'} 
+                                    loading="lazy"
+                                    className="hp-pos absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    style={posVars(img)}
                                 />
                                 <div className="absolute inset-0 bg-brand-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                                     <div className="w-12 h-12 rounded-full bg-white/90 flex items-center justify-center text-brand-blue scale-90 group-hover:scale-100 transition-transform duration-500">
@@ -258,16 +255,16 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
                         ))}
                     </div>
 
-                    <div className="flex justify-center gap-6">
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6">
                         {visibleImages < galleryImages.length && (
                             <Button 
                                 variant="outline" 
                                 size="lg" 
                                 onClick={() => setVisibleImages(prev => Math.min(prev + 3, galleryImages.length))}
-                                className="px-12"
+                                className="px-8 md:px-12"
                                 withArrow
                             >
-                                {lang === 'BHS' ? 'Prikaži više' : 'View more'}
+                                {t.showMoreButton}
                             </Button>
                         )}
                         {visibleImages > 3 && (
@@ -278,9 +275,9 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
                                     setVisibleImages(3);
                                     document.getElementById('put-i-vizija')?.scrollIntoView({ behavior: 'smooth' });
                                 }}
-                                className="px-12"
+                                className="px-8 md:px-12"
                             >
-                                {lang === 'BHS' ? 'Prikaži manje' : 'View less'}
+                                {t.showLessButton}
                             </Button>
                         )}
                     </div>
@@ -331,9 +328,9 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-md" onClick={() => setPubModalOpen(false)}></div>
                     
                     {/* Modal Content */}
-                    <div className="bg-white w-full max-w-3xl rounded-[2.5rem] overflow-hidden relative z-10 shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300">
+                    <div className="bg-white w-full max-w-3xl rounded-3xl md:rounded-[2.5rem] overflow-hidden relative z-10 shadow-2xl flex flex-col max-h-[90dvh] animate-in zoom-in-95 duration-300">
                         {/* Header */}
-                        <div className="p-8 md:p-10 border-b border-brand-blue/5 flex items-center justify-between bg-brand-cream/30">
+                        <div className="p-5 md:p-10 border-b border-brand-blue/5 flex items-center justify-between bg-brand-cream/30">
                             <div className="flex items-center gap-4">
                                 <div className="w-12 h-12 rounded-xl bg-brand-blue text-white flex items-center justify-center shadow-lg shadow-brand-blue/20">
                                     {React.createElement(getCategoryIcon(selectedCategory), { size: 24 })}
@@ -356,9 +353,9 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
                         </div>
 
                         {/* List */}
-                        <div className="flex-1 overflow-y-auto p-8 md:p-10 space-y-6">
+                        <div className="flex-1 overflow-y-auto p-5 md:p-10 space-y-4 md:space-y-6">
                             {t.publications[selectedCategory].map((item, idx) => (
-                                <div key={idx} className="group p-6 rounded-2xl border border-brand-blue/5 hover:border-brand-blue/10 hover:bg-brand-cream/20 transition-all duration-300">
+                                <div key={idx} className="group p-4 md:p-6 rounded-2xl border border-brand-blue/5 hover:border-brand-blue/10 hover:bg-brand-cream/20 transition-all duration-300">
                                     <h4 className="text-lg font-bold text-brand-dark/80 mb-3 leading-snug group-hover:text-brand-blue transition-colors">
                                         {item.title}
                                     </h4>
@@ -405,7 +402,7 @@ export const AboutRenata: React.FC<AboutRenataProps> = ({ onNavigate }) => {
                         {t.ctaSubtitle}
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-6">
-                        <Button size="lg" variant="primary" withArrow onClick={() => window.open('https://calendly.com/contact-habitplus/15min', '_blank')}>
+                        <Button size="lg" variant="primary" withArrow onClick={() => window.open(dict.BHS.links.calendlyUrl, '_blank')}>
                             {t.ctaButton}
                         </Button>
                         <Button size="lg" variant="outline" onClick={openContactModal}>

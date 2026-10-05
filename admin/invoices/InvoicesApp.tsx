@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FileText, Plus, Save, Loader2, Trash2, Settings, Users, Package, BarChart3, Send, DollarSign } from 'lucide-react';
+import { FileText, Plus, Save, Loader2, Trash2, Settings, Users, Package, BarChart3, Send, DollarSign, CloudUpload, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { InvoiceData, UserSettings } from './types';
-import { getInvoices, saveInvoice, deleteInvoice, getUserSettings, saveUserSettings, defaultSettings, getNextInvoiceNumber } from './lib/storage';
+import { getInvoices, saveInvoice, deleteInvoice, getUserSettings, saveUserSettings, defaultSettings, getNextInvoiceNumber, getClients, getArticles, loadInvoiceData, subscribeSyncStatus, SyncStatus, getLegacyLocalSummary, migrateLegacyLocalData } from './lib/storage';
 import { generateInvoiceFromPrompt, sendInvoiceEmail } from './lib/api';
 import { InvoicePreview } from './components/InvoicePreview';
 import { SettingsModal } from './components/SettingsModal';
@@ -27,17 +27,58 @@ export default function InvoicesApp() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const invoiceRef = useRef<HTMLDivElement>(null);
+  const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>({ pending: 0, error: null });
+  const [legacy, setLegacy] = useState(getLegacyLocalSummary());
+  const [isMigrating, setIsMigrating] = useState(false);
+
+  const refreshFromCache = () => {
+    setInvoices(getInvoices());
+    setSettings(getUserSettings());
+  };
+
+  useEffect(() => subscribeSyncStatus(setSyncStatus), []);
 
   useEffect(() => {
-    setInvoices(getInvoices());
-    const loadedSettings = getUserSettings();
-    setSettings(loadedSettings);
-    
-    // Show settings modal on first run if company name is empty
-    if (!loadedSettings.companyName) {
-      setShowSettings(true);
-    }
+    let cancelled = false;
+    loadInvoiceData()
+      .then(() => {
+        if (cancelled) return;
+        refreshFromCache();
+        setLoadState('ready');
+        // Prvo pokretanje: traži podatke o kompaniji (osim ako ih tek treba prenijeti iz preglednika)
+        if (!getUserSettings().companyName && !getLegacyLocalSummary()?.hasSettings) {
+          setShowSettings(true);
+        }
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error(err);
+        setLoadError(
+          err?.code === 'permission-denied'
+            ? 'Vaš račun nema pristup fakturama. Email računa mora biti dodan u listu administratora (kolekcija "admins").'
+            : 'Fakture se nisu mogle učitati sa servera. Provjerite internet vezu i osvježite stranicu.'
+        );
+        setLoadState('error');
+      });
+    return () => { cancelled = true; };
   }, []);
+
+  const handleMigrate = async () => {
+    setIsMigrating(true);
+    try {
+      await migrateLegacyLocalData();
+      refreshFromCache();
+      setLegacy(getLegacyLocalSummary());
+      alert('Podaci iz ovog preglednika su prebačeni na server.');
+    } catch (err) {
+      console.error(err);
+      alert('Prijenos nije uspio. Ništa nije obrisano, pokušajte ponovo.');
+    } finally {
+      setIsMigrating(false);
+    }
+  };
 
   const handleSendEmail = async (email: string, subject: string, message: string) => {
     if (!invoiceRef.current || !currentInvoice) {
@@ -100,7 +141,11 @@ export default function InvoicesApp() {
     setError(null);
     
     try {
-      const generatedData = await generateInvoiceFromPrompt(prompt);
+      const generatedData = await generateInvoiceFromPrompt(prompt, {
+        clients: getClients(),
+        articles: getArticles(),
+        today: new Date().toLocaleDateString('bs-BA'),
+      });
       const nextInvoiceNumber = getNextInvoiceNumber(invoices);
       
       const newInvoice: InvoiceData = {
@@ -111,6 +156,7 @@ export default function InvoicesApp() {
         clientName: generatedData.clientName || '',
         clientAddress: generatedData.clientAddress || '',
         clientId: generatedData.clientId || '',
+        clientEmail: generatedData.clientEmail || '',
         currency: generatedData.currency || 'BAM',
         items: generatedData.items || [],
         totalAmount: generatedData.totalAmount || 0,
@@ -120,9 +166,9 @@ export default function InvoicesApp() {
       
       setCurrentInvoice(newInvoice);
       setShowFullscreenPreview(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError('Došlo je do greške prilikom generisanja fakture. Pokušajte ponovo.');
+      setError(err?.message || 'Došlo je do greške prilikom generisanja fakture. Pokušajte ponovo.');
     } finally {
       setIsGenerating(false);
     }
@@ -178,8 +224,47 @@ export default function InvoicesApp() {
     setCurrentInvoice(newInvoice);
   };
 
+  if (loadState !== 'ready') {
+    return (
+      <div className="flex h-full min-h-[600px] items-center justify-center bg-gray-50 font-sans p-6">
+        {loadState === 'loading' ? (
+          <div className="flex items-center gap-3 text-gray-500">
+            <Loader2 className="animate-spin" size={20} /> Učitavanje faktura sa servera...
+          </div>
+        ) : (
+          <div className="max-w-md bg-white border border-red-200 rounded-xl p-6 text-center">
+            <AlertTriangle className="mx-auto text-red-500 mb-3" size={32} />
+            <p className="text-gray-700">{loadError}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-full min-h-[600px] bg-gray-50 font-sans text-left">
+    <div className="flex flex-col h-full min-h-[600px] bg-gray-50 font-sans text-left">
+      {legacy && (
+        <div className="flex flex-wrap items-center gap-3 bg-amber-50 border-b border-amber-200 px-4 py-3 text-sm text-amber-900 print:hidden">
+          <CloudUpload size={18} className="shrink-0" />
+          <span className="flex-1 min-w-[240px]">
+            U ovom pregledniku postoje stare fakture koje nisu na serveru: {legacy.invoices} faktura, {legacy.clients} klijenata, {legacy.articles} artikala.
+          </span>
+          <button
+            onClick={handleMigrate}
+            disabled={isMigrating}
+            className="flex items-center gap-2 bg-amber-600 hover:bg-amber-700 disabled:opacity-60 text-white py-1.5 px-3 rounded-md"
+          >
+            {isMigrating ? <Loader2 size={16} className="animate-spin" /> : <CloudUpload size={16} />}
+            Prebaci na server
+          </button>
+        </div>
+      )}
+      {syncStatus.error && (
+        <div className="flex items-center gap-2 bg-red-50 border-b border-red-200 px-4 py-2 text-sm text-red-800 print:hidden">
+          <AlertTriangle size={16} /> {syncStatus.error}
+        </div>
+      )}
+    <div className="flex flex-1 min-h-0">
       {/* Sidebar - Hidden when printing */}
       <div className="w-80 bg-white border-r border-gray-200 flex flex-col print:hidden">
         <div className="p-4 border-b border-gray-200">
@@ -195,6 +280,15 @@ export default function InvoicesApp() {
             >
               <Settings size={20} />
             </button>
+          </div>
+          <div className="-mt-2 mb-3 flex items-center gap-1.5 text-xs">
+            {syncStatus.pending > 0 ? (
+              <span className="flex items-center gap-1.5 text-gray-500"><Loader2 size={12} className="animate-spin" /> Spremanje na server...</span>
+            ) : syncStatus.error ? (
+              <span className="flex items-center gap-1.5 text-red-600"><AlertTriangle size={12} /> Spremanje nije uspjelo</span>
+            ) : (
+              <span className="flex items-center gap-1.5 text-green-600"><CheckCircle2 size={12} /> Sve je spremljeno na server</span>
+            )}
           </div>
           
           <div className="flex flex-col gap-2">
@@ -422,6 +516,8 @@ export default function InvoicesApp() {
       </div>
       
       {/* Settings Modal */}
+    </div>
+
       {showSettings && (
         <SettingsModal 
           settings={settings} 

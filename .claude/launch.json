@@ -4,8 +4,11 @@
     {
       "name": "habitplus",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
-      "cwd": "/Users/arminzimic/Desktop/habitplus_v22_backup",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "cwd": "/Users/arminzimic/Documents/00_WEB_PROJEKTI/_LIVE/habitplus",
       "port": 3002
     }
   ]

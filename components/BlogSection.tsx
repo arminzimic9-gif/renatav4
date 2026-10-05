@@ -7,7 +7,8 @@ import { blogService } from '../admin/services/firestoreService';
 import { Blog as BlogType } from '../admin/types';
 
 export const BlogSection: React.FC = () => {
-  const { lang } = useLanguage();
+  const { lang, dict } = useLanguage();
+  const bt = dict[lang].blogTexts;
   const navigate = useNavigate();
   const isBHS = lang === 'BHS';
   const [blogs, setBlogs] = useState<BlogType[]>([]);
@@ -48,14 +49,12 @@ export const BlogSection: React.FC = () => {
         {/* Header content */}
         <div className="text-center mb-16 relative">
           <WordReveal 
-            text={isBHS ? 'Blog' : 'Blog'}
+            text={bt.sectionTitle}
             center
             className="text-3xl md:text-5xl font-serif font-bold text-brand-blue mb-4"
           />
           <p className="text-gray-500 max-w-2xl mx-auto text-lg mb-8">
-            {isBHS 
-              ? 'Istražite stručne članke, savjete i najnovija saznanja o promjeni navika.' 
-              : 'Explore expert articles, tips, and the latest insights on habit change.'}
+            {bt.sectionSubtitle}
           </p>
         </div>
 
@@ -82,7 +81,7 @@ export const BlogSection: React.FC = () => {
                     />
                   ) : (
                     <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                      <span className="text-gray-300 font-serif text-4xl">HP</span>
+                      <span className="text-gray-300 font-serif text-4xl">{bt.coverPlaceholder}</span>
                     </div>
                   )}
                 </div>
@@ -107,7 +106,7 @@ export const BlogSection: React.FC = () => {
                   </p>
                   
                   <div className="flex items-center text-brand-blue text-sm font-bold gap-2 mt-auto group-hover:gap-3 transition-all">
-                    {isBHS ? 'Pročitaj više' : 'Read more'} <ArrowRight size={16} />
+                    {bt.readMore} <ArrowRight size={16} />
                   </div>
                 </div>
               </div>
@@ -120,7 +119,7 @@ export const BlogSection: React.FC = () => {
             onClick={() => navigate(isBHS ? '/blog' : '/en-blog')}
             className="px-8 py-4 bg-white border border-gray-200 text-brand-dark font-bold rounded-2xl hover:border-brand-blue hover:text-brand-blue transition-all flex items-center gap-2"
           >
-            {isBHS ? 'Svi članci' : 'All articles'} <ArrowRight size={18} />
+            {bt.allArticles} <ArrowRight size={18} />
           </button>
         </div>
       </div>

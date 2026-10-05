@@ -23,12 +23,12 @@ export const SettingsModal: React.FC<Props> = ({ settings, onSave, onClose, isFi
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const content = event.target?.result as string;
       if (content) {
-        const success = importData(content);
+        const success = await importData(content);
         if (success) {
-          alert('Podaci su uspješno učitani! Stranica će se sada osvježiti.');
+          alert('Podaci su uspješno učitani na server! Stranica će se sada osvježiti.');
           window.location.reload();
         } else {
           alert('Greška pri učitavanju podataka. Provjerite da li je fajl validan.');
@@ -291,7 +291,7 @@ export const SettingsModal: React.FC<Props> = ({ settings, onSave, onClose, isFi
 
           <div className="border-t border-gray-200 pt-4 mt-4">
             <h3 className="text-sm font-bold text-gray-800 mb-3">Backup i sigurnost (Eksport / Import)</h3>
-            <p className="text-xs text-gray-500 mb-4">Napravite sigurnosnu kopiju svih vaših podataka (fakture, klijenti, artikli, postavke) ili ih vratite iz postojećeg fajla u slučaju da vam se obrišu podaci iz pretraživača.</p>
+            <p className="text-xs text-gray-500 mb-4">Svi podaci (fakture, klijenti, artikli, postavke) automatski se čuvaju na serveru. Eksport pravi dodatnu kopiju na vašem računaru, a import vraća podatke iz takvog fajla.</p>
             
             <div className="flex flex-wrap gap-4">
               <button 

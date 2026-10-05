@@ -46,10 +46,10 @@ const ProgressRing: React.FC<ProgressRingProps> = ({ icon: Icon, title, desc, co
   return (
     <div 
       ref={ringRef}
-      className={`flex flex-col items-center text-center transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+      className={`flex flex-row md:flex-col items-center text-left md:text-center gap-4 md:gap-0 transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
     >
-      <div className="relative w-36 h-36 mb-6 flex items-center justify-center">
-        <svg className="absolute inset-0 w-full h-full -rotate-90">
+      <div className="relative w-24 h-24 md:w-36 md:h-36 shrink-0 mb-0 md:mb-6 flex items-center justify-center">
+        <svg viewBox="0 0 144 144" className="absolute inset-0 w-full h-full -rotate-90">
           <circle 
             cx="72" cy="72" r="60" 
             className={`fill-none stroke-[8] ${styles.ringBg}`} 
@@ -63,12 +63,14 @@ const ProgressRing: React.FC<ProgressRingProps> = ({ icon: Icon, title, desc, co
             }}
           />
         </svg>
-        <div className={`relative z-10 w-16 h-16 rounded-full ${styles.iconBg} ${styles.iconColor} flex items-center justify-center`}>
-          <Icon size={32} />
+        <div className={`relative z-10 w-12 h-12 md:w-16 md:h-16 rounded-full ${styles.iconBg} ${styles.iconColor} flex items-center justify-center`}>
+          <Icon size={32} className="w-6 h-6 md:w-8 md:h-8" />
         </div>
       </div>
-      <h3 className="text-xl font-bold text-brand-dark/80 mb-2 tracking-tight">{title}</h3>
-      <p className="text-[15px] leading-relaxed text-brand-dark/50 max-w-[220px]">{desc}</p>
+      <div className="flex-1 min-w-0 md:flex-none">
+        <h3 className="text-xl font-bold text-brand-dark/80 mb-2 tracking-tight">{title}</h3>
+        <p className="text-[15px] leading-relaxed text-brand-dark/50 md:max-w-[220px] md:mx-auto">{desc}</p>
+      </div>
     </div>
   );
 };
@@ -82,13 +84,13 @@ export const ProgressRingInfographic: React.FC<ProgressRingInfographicProps> = (
   const iconMap: { [key: string]: LucideIcon } = { Users, Calendar, Eraser, TrendingUp, Clock, Heart };
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-6 py-12 flex flex-col items-center">
+    <div className="w-full max-w-6xl mx-auto px-0 sm:px-6 py-6 md:py-12 flex flex-col items-center">
       {/* Negative Section */}
-      <div className="w-full mb-20">
-        <h2 className="text-3xl font-serif font-bold text-red-500 text-center mb-16">
+      <div className="w-full mb-12 md:mb-20">
+        <h2 className="text-3xl font-serif font-bold text-red-500 text-center mb-8 md:mb-16">
           {t.prepoznajSebeNegativeTitle}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {t.prepoznajSebeNegativeItems.map((item: any, idx: number) => (
             <ProgressRing 
               key={idx}
@@ -103,11 +105,11 @@ export const ProgressRingInfographic: React.FC<ProgressRingInfographicProps> = (
       </div>
 
       {/* Positive Section */}
-      <div className="w-full mb-16">
-        <h2 className="text-3xl font-serif font-bold text-brand-blue text-center mb-16">
+      <div className="w-full mb-12 md:mb-16">
+        <h2 className="text-3xl font-serif font-bold text-brand-blue text-center mb-8 md:mb-16">
           {t.prepoznajSebePositiveTitle}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
           {t.prepoznajSebePositiveItems.map((item: any, idx: number) => (
             <ProgressRing 
               key={idx}

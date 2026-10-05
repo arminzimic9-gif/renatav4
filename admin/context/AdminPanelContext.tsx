@@ -43,8 +43,6 @@ export const AdminPanelProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   // Wait for Firebase Auth then load data
   useEffect(() => {
-    const isLocalAdmin = localStorage.getItem('isAdmin') === 'true';
-
     const loadData = async () => {
       try {
         const data = await translationsService.get();
@@ -58,11 +56,6 @@ export const AdminPanelProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         setIsLoading(false);
       }
     };
-
-    if (isLocalAdmin) {
-      loadData();
-      return;
-    }
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
@@ -108,6 +101,8 @@ export const AdminPanelProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const loadBlogs = useCallback(async () => {
     try {
+      // Ugrađene objave prebaci u bazu da bi se mogle uređivati (samo jednom).
+      await blogService.seedDefaultsIfNeeded().catch((err) => console.error('Seed blogova nije uspio:', err));
       const data = await blogService.getAll();
       setBlogs(data);
     } catch (err) {

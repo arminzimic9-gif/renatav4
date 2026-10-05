@@ -12,6 +12,7 @@ import {
   orderBy,
   where,
   serverTimestamp,
+  writeBatch,
 } from 'firebase/firestore';
 import { Blog, PopupDocument } from '../types';
 import { translations as defaultTranslations } from '../../translations';
@@ -379,47 +380,40 @@ export const DEFAULT_BLOGS: Blog[] = [
   }
 ];
 
-// Utility to check if we are using the local mock system
-const useLocalSystem = () => {
-  try {
-    return localStorage.getItem('isAdmin') === 'true';
-  } catch (e) {
-    return false;
-  }
-};
+// Blogovi: ugrađene objave (DEFAULT_BLOGS) se pri prvoj prijavi admina upišu u bazu,
+// pa se odatle uređuju kao i sve ostale. Oznaka "blogs_meta" pamti da je to urađeno,
+// da obrisane objave ne bi ponovo iskočile kad se obriše i zadnja.
+const BLOGS_META = doc(db, 'website_content', 'blogs_meta');
 
 export const blogService = {
   async getAll(): Promise<Blog[]> {
-    if (useLocalSystem()) {
-      const localBlogs = localStorage.getItem('local_blogs');
-      if (!localBlogs || localBlogs.includes('razumijevanje-nikotinske-ovisnosti')) {
-        localStorage.setItem('local_blogs', JSON.stringify(DEFAULT_BLOGS));
-        return DEFAULT_BLOGS;
-      }
-      try {
-        const parsed = JSON.parse(localBlogs);
-        return parsed.length > 0 ? parsed : DEFAULT_BLOGS;
-      } catch (e) {
-        return DEFAULT_BLOGS;
-      }
-    }
     try {
       const q = query(collection(db, BLOGS_COLLECTION), orderBy('publishedAt', 'desc'));
       const snapshot = await getDocs(q).catch(() => getDocs(collection(db, BLOGS_COLLECTION)));
       const docs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as Blog));
-      return docs.length > 0 ? docs : DEFAULT_BLOGS;
+      if (docs.length > 0) return docs;
+      const meta = await getDoc(BLOGS_META).catch(() => null);
+      return meta && meta.exists() && meta.data().seeded ? [] : DEFAULT_BLOGS;
     } catch (e) {
       console.error("Firebase failed, using fallback blogs", e);
       return DEFAULT_BLOGS;
     }
   },
 
-  async getById(id: string): Promise<Blog | null> {
-    if (useLocalSystem()) {
-      const localBlogs = localStorage.getItem('local_blogs');
-      const blogs: Blog[] = localBlogs ? JSON.parse(localBlogs) : DEFAULT_BLOGS;
-      return blogs.find(b => b.id === id) || DEFAULT_BLOGS.find(b => b.id === id) || null;
+  /** Samo za admina: upiše ugrađene objave u bazu ako to još nije urađeno. */
+  async seedDefaultsIfNeeded(): Promise<void> {
+    const meta = await getDoc(BLOGS_META);
+    if (meta.exists() && meta.data().seeded) return;
+    const existing = await getDocs(collection(db, BLOGS_COLLECTION));
+    const batch = writeBatch(db);
+    if (existing.empty) {
+      DEFAULT_BLOGS.forEach(({ id, ...data }) => batch.set(doc(db, BLOGS_COLLECTION, id), JSON.parse(JSON.stringify(data))));
     }
+    batch.set(BLOGS_META, { seeded: true, seededAt: serverTimestamp() });
+    await batch.commit();
+  },
+
+  async getById(id: string): Promise<Blog | null> {
     try {
       const snap = await getDoc(doc(db, BLOGS_COLLECTION, id));
       if (!snap.exists()) {
@@ -432,60 +426,29 @@ export const blogService = {
   },
 
   async create(blog: Omit<Blog, 'id'>): Promise<string> {
-    if (useLocalSystem()) {
-      const newId = Math.random().toString(36).substring(2, 15);
-      const newBlog = { id: newId, ...blog } as Blog;
-      const localBlogs = localStorage.getItem('local_blogs');
-      const blogs: Blog[] = localBlogs ? JSON.parse(localBlogs) : [];
-      blogs.push(newBlog);
-      localStorage.setItem('local_blogs', JSON.stringify(blogs));
-      return newId;
-    }
     const ref = await addDoc(collection(db, BLOGS_COLLECTION), blog);
     return ref.id;
   },
 
   async update(id: string, data: Partial<Blog>): Promise<void> {
-    if (useLocalSystem()) {
-      const localBlogs = localStorage.getItem('local_blogs');
-      let blogs: Blog[] = localBlogs ? JSON.parse(localBlogs) : [];
-      blogs = blogs.map(b => b.id === id ? { ...b, ...data } : b);
-      localStorage.setItem('local_blogs', JSON.stringify(blogs));
-      return;
-    }
-    await updateDoc(doc(db, BLOGS_COLLECTION, id), data as any);
+    // setDoc s merge radi i kad dokument još ne postoji u bazi.
+    const { id: _id, ...rest } = data as any;
+    await setDoc(doc(db, BLOGS_COLLECTION, id), JSON.parse(JSON.stringify(rest)), { merge: true });
   },
 
   async delete(id: string): Promise<void> {
-    if (useLocalSystem()) {
-      const localBlogs = localStorage.getItem('local_blogs');
-      let blogs: Blog[] = localBlogs ? JSON.parse(localBlogs) : [];
-      blogs = blogs.filter(b => b.id !== id);
-      localStorage.setItem('local_blogs', JSON.stringify(blogs));
-      return;
-    }
     await deleteDoc(doc(db, BLOGS_COLLECTION, id));
   },
 };
 
-// Translations (website_content/translations)
 export const translationsService = {
   async get(): Promise<any> {
-    if (useLocalSystem()) {
-      const localContent = localStorage.getItem('local_content');
-      if (localContent) return deepMerge(defaultTranslations, JSON.parse(localContent));
-      return defaultTranslations;
-    }
     const snap = await getDoc(doc(db, 'website_content', 'translations'));
     if (snap.exists()) return deepMerge(defaultTranslations, snap.data());
     return defaultTranslations;
   },
 
   async save(data: any): Promise<void> {
-    if (useLocalSystem()) {
-      localStorage.setItem('local_content', JSON.stringify(data));
-      return;
-    }
     await setDoc(doc(db, 'website_content', 'translations'), data);
   },
 };

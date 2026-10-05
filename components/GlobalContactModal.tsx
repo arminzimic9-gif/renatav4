@@ -10,6 +10,7 @@ export const GlobalContactModal: React.FC = () => {
   const { isContactModalOpen, closeContactModal, contactModalProgram } = useUI();
   const { lang, dict } = useLanguage();
   const t = dict[lang].home;
+  const cf = dict[lang].contactForm;
 
   const [formData, setFormData] = useState({
     name: '',
@@ -69,9 +70,9 @@ export const GlobalContactModal: React.FC = () => {
     } catch (err: any) {
       console.error('Error adding document: ', err);
       if (err.message === 'TIMEOUT') {
-        setError(lang === 'BHS' ? 'Sporo povezivanje. Molimo pokušajte ponovo.' : 'Connection timeout. Please try again.');
+        setError(cf.timeoutError);
       } else {
-        setError(lang === 'BHS' ? 'Došlo je do greške. Molimo pokušajte ponovo.' : 'An error occurred. Please try again.');
+        setError(cf.genericError);
       }
     } finally {
       setIsSubmitting(false);
@@ -85,16 +86,17 @@ export const GlobalContactModal: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4" 
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-start sm:items-center justify-center p-4 py-6 overflow-y-auto" 
       onClick={closeContactModal}
     >
       <div 
-        className="bg-white rounded-[2.5rem] max-w-lg w-full p-8 relative animate-fade-in-up" 
+        className="bg-white rounded-[2.5rem] max-w-lg w-full my-auto p-6 sm:p-8 relative animate-fade-in-up" 
         onClick={(e) => e.stopPropagation()}
       >
         <button 
           onClick={closeContactModal} 
-          className="absolute top-6 right-6 p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+          aria-label="Close"
+          className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 sm:w-9 sm:h-9 flex items-center justify-center bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
         >
           <X size={20} />
         </button>
@@ -104,19 +106,17 @@ export const GlobalContactModal: React.FC = () => {
             <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 size={40} />
             </div>
-            <h3 className="text-3xl font-serif font-bold text-brand-dark">
-              {lang === 'BHS' ? 'Poruka poslana!' : 'Message Sent!'}
+            <h3 className="text-2xl sm:text-3xl font-serif font-bold text-brand-dark">
+              {cf.successTitle}
             </h3>
             <p className="text-gray-500 max-w-sm mx-auto">
-              {lang === 'BHS' 
-                ? 'Hvala Vam. Javit ćemo Vam se u najkraćem mogućem roku.' 
-                : 'Thank you. We will get back to you as soon as possible.'}
+              {cf.successMessage}
             </p>
           </div>
         ) : (
           <>
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-serif font-bold text-brand-dark/80 mb-2">{t.contactModalTitle}</h3>
+            <div className="text-center mb-6 sm:mb-8 px-8 sm:px-0">
+              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-brand-dark/80 mb-2">{t.contactModalTitle}</h3>
               <p className="text-brand-dark/50">{t.contactModalSubtitle}</p>
             </div>
 
@@ -125,7 +125,7 @@ export const GlobalContactModal: React.FC = () => {
                 fullWidth 
                 size="lg"  
                 onClick={() => {
-                  window.open('https://calendly.com/contact-habitplus/15min', '_blank');
+                  window.open(dict.BHS.links.calendlyUrl, '_blank');
                   closeContactModal();
                 }}
               >
@@ -136,7 +136,7 @@ export const GlobalContactModal: React.FC = () => {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-100"></div>
                 </div>
-                <div className="relative flex justify-center text-[10px] uppercase text-gray-400 font-bold bg-white px-4 tracking-widest">
+                <div className="relative flex justify-center text-xs uppercase text-gray-400 font-bold bg-white px-4 tracking-widest">
                   {t.contactModalOr}
                 </div>
               </div>
@@ -150,7 +150,7 @@ export const GlobalContactModal: React.FC = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     placeholder={t.contactModalNamePlaceholder} 
-                    className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all font-medium" 
+                    className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all text-base font-medium" 
                   />
                   <input 
                     name="email"
@@ -159,7 +159,7 @@ export const GlobalContactModal: React.FC = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder={t.contactModalEmailPlaceholder} 
-                    className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all font-medium" 
+                    className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all text-base font-medium" 
                   />
                   
                   <div className="space-y-2">
@@ -170,7 +170,7 @@ export const GlobalContactModal: React.FC = () => {
                       name="program"
                       value={formData.program}
                       onChange={handleInputChange}
-                      className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all text-brand-dark/70 appearance-none cursor-pointer font-medium"
+                      className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all text-brand-dark/70 appearance-none cursor-pointer text-base font-medium"
                     >
                       {t.contactModalPrograms.map((p: any) => (
                         <option key={p.value} value={p.value}>{p.label}</option>
@@ -185,7 +185,7 @@ export const GlobalContactModal: React.FC = () => {
                     value={formData.message}
                     onChange={handleInputChange}
                     placeholder={t.contactModalMessagePlaceholder}
-                    className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all resize-none font-medium"
+                    className="w-full px-6 py-4 rounded-2xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-blue/20 transition-all resize-none text-base font-medium"
                   ></textarea>
                 </div>
                 
@@ -200,7 +200,7 @@ export const GlobalContactModal: React.FC = () => {
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
                       <Loader2 className="animate-spin" size={20} />
-                      {lang === 'BHS' ? 'Slanje...' : 'Sending...'}
+                      {cf.sendingLabel}
                     </span>
                   ) : t.contactModalSubmitBtn}
                 </Button>

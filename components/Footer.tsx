@@ -19,6 +19,8 @@ export const Footer: React.FC<FooterProps> = () => {
    const { lang, dict } = useLanguage();
    const { openContactModal } = useUI();
    const t = dict[lang].footer;
+   const links = dict.BHS.links;
+   const firma = dict[lang].podaciFirme;
    const [email, setEmail] = React.useState('');
    const [isSubmitting, setIsSubmitting] = React.useState(false);
    const [status, setStatus] = React.useState<'idle' | 'success' | 'error'>('idle');
@@ -96,11 +98,11 @@ export const Footer: React.FC<FooterProps> = () => {
    };
 
    return (
-      <footer className="bg-white pt-20 pb-10 border-t border-gray-100" id="kontakt">
+      <footer className="bg-white pt-12 md:pt-20 pb-24 md:pb-10 border-t border-gray-100" id="kontakt">
          <div className="max-w-7xl mx-auto px-6 md:px-8">
             
             {/* Newsletter Subscription Section */}
-            <div className="mb-20 bg-[#F8FAFC] rounded-4xl p-8 md:p-12 border border-gray-100 relative overflow-hidden group">
+            <div className="mb-12 md:mb-20 bg-[#F8FAFC] rounded-4xl p-6 md:p-12 border border-gray-100 relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-blue/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-brand-blue/10 transition-colors duration-700"></div>
                <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-10">
                   <div className="max-w-xl">
@@ -150,7 +152,7 @@ export const Footer: React.FC<FooterProps> = () => {
                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-12 lg:gap-16 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-10 md:gap-12 lg:gap-16 mb-16">
                 <div className="md:col-span-1 flex flex-col items-start text-left">
                     <button onClick={() => navigate(ROUTES[lang]['home'])} className="inline-block mb-6 group">
                        <img src="/logo.svg" alt="HabitPlus Logo" className="h-20 md:h-24 w-auto transition-transform duration-500 group-hover:scale-105" />
@@ -159,29 +161,29 @@ export const Footer: React.FC<FooterProps> = () => {
                      {t.tagline}
                   </p>
                   <div className="mb-6">
-                     <h4 className="font-bold text-brand-dark mb-4 text-xs uppercase tracking-widest text-[#B4B4B4]">HabitPlus</h4>
-                     <div className="flex gap-3 items-center">
-                        <a href="https://www.linkedin.com/company/habitplus/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#0077b5] hover:text-white transition-all duration-300">
+                     <h4 className="font-bold text-brand-dark mb-4 text-xs uppercase tracking-widest text-[#6B7280] md:text-[#B4B4B4]">{t.socialHabitplusTitle}</h4>
+                     <div className="flex gap-4 md:gap-3 items-center">
+                        <a href={links.habitplusLinkedin} target="_blank" rel="noopener noreferrer" className="w-11 h-11 md:w-9 md:h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#0077b5] hover:text-white transition-all duration-300">
                            <Linkedin size={16} />
                         </a>
-                        <a href="https://www.instagram.com/habitplus.ba/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#E1306C] hover:text-white transition-all duration-300">
+                        <a href={links.habitplusInstagram} target="_blank" rel="noopener noreferrer" className="w-11 h-11 md:w-9 md:h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#E1306C] hover:text-white transition-all duration-300">
                            <Instagram size={16} />
                         </a>
-                        <a href="https://www.facebook.com/profile.php?id=61584469727312" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#1877F2] hover:text-white transition-all duration-300">
+                        <a href={links.habitplusFacebook} target="_blank" rel="noopener noreferrer" className="w-11 h-11 md:w-9 md:h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#1877F2] hover:text-white transition-all duration-300">
                            <Facebook size={16} />
                         </a>
                      </div>
                   </div>
                   <div>
-                     <h4 className="font-bold text-brand-dark mb-4 text-xs uppercase tracking-widest text-[#B4B4B4]">Renata Lačević</h4>
-                     <div className="flex gap-3 items-center">
-                        <a href="https://www.linkedin.com/in/renatalacevic/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#0077b5] hover:text-white transition-all duration-300">
+                     <h4 className="font-bold text-brand-dark mb-4 text-xs uppercase tracking-widest text-[#6B7280] md:text-[#B4B4B4]">{t.socialRenataTitle}</h4>
+                     <div className="flex gap-4 md:gap-3 items-center">
+                        <a href={links.renataLinkedin} target="_blank" rel="noopener noreferrer" className="w-11 h-11 md:w-9 md:h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#0077b5] hover:text-white transition-all duration-300">
                            <Linkedin size={16} />
                         </a>
-                        <a href="https://www.instagram.com/renatalacevic/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#E1306C] hover:text-white transition-all duration-300">
+                        <a href={links.renataInstagram} target="_blank" rel="noopener noreferrer" className="w-11 h-11 md:w-9 md:h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#E1306C] hover:text-white transition-all duration-300">
                            <Instagram size={16} />
                         </a>
-                        <a href="https://www.facebook.com/renata.lacevic/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#1877F2] hover:text-white transition-all duration-300">
+                        <a href={links.renataFacebook} target="_blank" rel="noopener noreferrer" className="w-11 h-11 md:w-9 md:h-9 rounded-full bg-brand-stone flex items-center justify-center text-brand-dark hover:bg-[#1877F2] hover:text-white transition-all duration-300">
                            <Facebook size={16} />
                         </a>
                      </div>
@@ -195,7 +197,7 @@ export const Footer: React.FC<FooterProps> = () => {
                         <li key={i}>
                            <button 
                               onClick={() => handleProgramClick(i)} 
-                              className="hover:text-brand-blue transition-colors hover:pl-1 text-left"
+                              className="inline-block py-1.5 md:py-0 hover:text-brand-blue transition-colors hover:pl-1 text-left"
                            >
                               {p}
                            </button>
@@ -208,7 +210,7 @@ export const Footer: React.FC<FooterProps> = () => {
                         <li key={i}>
                            <button 
                               onClick={() => handleCompanyClick(i)} 
-                              className="hover:text-brand-blue transition-colors hover:pl-1 text-left"
+                              className="inline-block py-1.5 md:py-0 hover:text-brand-blue transition-colors hover:pl-1 text-left"
                            >
                               {c}
                            </button>
@@ -221,31 +223,31 @@ export const Footer: React.FC<FooterProps> = () => {
                   <h4 className="font-bold text-brand-dark mb-6 text-sm uppercase tracking-widest">{t.contactTitle}</h4>
                   <ul className="space-y-5 text-sm text-gray-500">
                      <li className="font-medium text-brand-blue text-lg hover:underline cursor-pointer">
-                        <button onClick={openContactModal} className="text-left">{dict[lang].podaciFirme?.email ?? 'contact@habitplus.ba'}</button>
+                        <button onClick={openContactModal} className="text-left">{firma.email}</button>
                      </li>
-                     <li><strong className="text-gray-900">{t.contactPerson}</strong><br /><span className="text-gray-500 leading-relaxed inline-block mt-1">{dict[lang].podaciFirme?.contactPerson ?? 'Renata Lačević'}</span></li>
-                     <li><strong className="text-gray-900">{t.address}</strong><br /><span className="text-gray-500 leading-relaxed inline-block mt-1 whitespace-pre-line">{dict[lang].podaciFirme?.address ?? 'Kemal begova 15\n71000 Sarajevo, BiH'}</span></li>
+                     <li><strong className="text-gray-900">{t.contactPerson}</strong><br /><span className="text-gray-500 leading-relaxed inline-block mt-1">{firma.contactPerson}</span></li>
+                     <li><strong className="text-gray-900">{t.address}</strong><br /><span className="text-gray-500 leading-relaxed inline-block mt-1 whitespace-pre-line">{firma.address}</span></li>
                   </ul>
                </div>
 
                <div className="md:col-span-2 xl:col-span-1">
                    <h4 className="font-bold text-brand-dark mb-6 text-sm uppercase tracking-widest">{t.paymentTitle}</h4>
                    <div className="space-y-4 text-sm text-gray-500">
-                     <p><strong className="text-gray-900">{t.companyId}</strong><br />{dict[lang].podaciFirme?.companyId ?? '4304302390006'}</p>
-                     <p><strong className="text-gray-900">{t.bank}</strong><br />{dict[lang].podaciFirme?.bank ?? 'ProCredit Bank, Sarajevo, BiH'}</p>
-                     <p><strong className="text-gray-900">TR BiH:</strong><br />{dict[lang].podaciFirme?.trBih ?? '1941411342400148'}</p>
+                     <p><strong className="text-gray-900">{t.companyId}</strong><br />{firma.companyId}</p>
+                     <p><strong className="text-gray-900">{t.bank}</strong><br />{firma.bank}</p>
+                     <p><strong className="text-gray-900">{t.trBihLabel}</strong><br />{firma.trBih}</p>
                      <div className="pt-3 border-t border-gray-200">
-                         <p className="text-sm leading-relaxed"><strong className="text-gray-900">IBAN USD:</strong><br />{dict[lang].podaciFirme?.ibanUsd ?? 'BA391941411342402379'}<br />SWIFT: {dict[lang].podaciFirme?.swiftUsd ?? 'MEBBBA22XXX'}</p>
+                         <p className="text-sm leading-relaxed"><strong className="text-gray-900">{t.ibanUsdLabel}</strong><br />{firma.ibanUsd}<br />{t.swiftLabel} {firma.swiftUsd}</p>
                      </div>
                      <div className="pt-3 border-t border-gray-200">
-                         <p className="text-sm leading-relaxed"><strong className="text-gray-900">IBAN EUR:</strong><br />{dict[lang].podaciFirme?.ibanEur ?? 'BA391941411342401215'}<br />SWIFT: {dict[lang].podaciFirme?.swiftEur ?? 'MEBBBA22XXX'}</p>
+                         <p className="text-sm leading-relaxed"><strong className="text-gray-900">{t.ibanEurLabel}</strong><br />{firma.ibanEur}<br />{t.swiftLabel} {firma.swiftEur}</p>
                      </div>
                   </div>
                </div>
             </div>
 
-             <div className="flex justify-center items-center pt-8 border-t border-gray-100 text-xs text-gray-400 font-medium">
-                <div className="text-center flex flex-col items-center gap-1 md:gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
+             <div className="flex justify-center items-center pt-8 border-t border-gray-100 text-xs text-gray-500 md:text-gray-400 font-medium">
+                <div className="text-center flex flex-col items-center gap-1 md:gap-1.5 md:opacity-80 hover:opacity-100 transition-opacity">
                    <span className="block">{t.copyright.split('Powered')[0].trim()}</span>
                    <div className="flex flex-col md:flex-row items-center gap-1 md:gap-1.5">
                       <span>Powered{t.copyright.split('Powered')[1]?.split('Via Creativa')[0]}</span>

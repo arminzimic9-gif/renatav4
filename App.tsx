@@ -15,6 +15,7 @@ import { NewsletterPopup } from './components/NewsletterPopup';
 import { Header } from './components/Header';
 import { LanguageProvider } from './context/LanguageContext';
 import { UIProvider } from './context/UIContext';
+import { SiteImagesProvider } from './context/SiteImagesContext';
 import { AdminProvider } from './context/AdminContext';
 import { GlobalContactModal } from './components/GlobalContactModal';
 import { LoadingScreen } from './components/LoadingScreen';
@@ -35,6 +36,7 @@ import AdminRoute from './admin/components/AdminRoute';
 import EventPopup from './components/EventPopup';
 // Fakture učitavamo tek kad se otvori admin/fakture (teški PDF paketi)
 const InvoicesApp = React.lazy(() => import('./admin/invoices/InvoicesApp'));
+const ImagesEditor = React.lazy(() => import('./admin/pages/ImagesEditor').then((m) => ({ default: m.ImagesEditor })));
 
 // Inner app that has access to router context
 const AppInner: React.FC = () => {
@@ -69,6 +71,7 @@ const AppInner: React.FC = () => {
   return (
     <AdminProvider>
       <LanguageProvider>
+       <SiteImagesProvider>
         <UIProvider isAppLoading={isLoading && !isAdminRoute}>
           {isLoading && !isAdminRoute && <LoadingScreen onComplete={() => setIsLoading(false)} />}
           <div className={`antialiased selection:bg-brand-blue selection:text-white min-h-screen flex flex-col transition-opacity duration-1000 overflow-x-hidden ${isLoading && !isAdminRoute ? 'opacity-0' : 'opacity-100'}`}>
@@ -97,6 +100,14 @@ const AppInner: React.FC = () => {
                       <Route path="popups/new" element={<PopupEditor />} />
                       <Route path="popups/:id" element={<PopupEditor />} />
                       <Route path="settings" element={<Settings />} />
+                      <Route
+                        path="slike"
+                        element={
+                          <Suspense fallback={<div style={{ color: '#888', padding: 24 }}>Učitavanje...</div>}>
+                            <ImagesEditor />
+                          </Suspense>
+                        }
+                      />
                       <Route
                         path="fakture"
                         element={
@@ -147,6 +158,7 @@ const AppInner: React.FC = () => {
             )}
           </div>
         </UIProvider>
+       </SiteImagesProvider>
       </LanguageProvider>
     </AdminProvider>
   );

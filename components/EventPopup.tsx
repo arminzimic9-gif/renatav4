@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { resolveRoute } from '../routes';
 import { popupService } from '../admin/services/firestoreService';
 import { PopupDocument } from '../admin/types';
+import { useLanguage } from '../context/LanguageContext';
 
 // Koristi URL za detekciju jezika — ne importuje useLanguage (HMR safe)
 function getLangFromPath(pathname: string): 'BHS' | 'EN' {
@@ -16,6 +17,7 @@ const SESSION_KEY = (lang: string) => `habitplus_popup_shown_${lang.toLowerCase(
 const EventPopup: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { dict } = useLanguage();
   const [popup, setPopup] = useState<PopupDocument | null>(null);
   const [visible, setVisible] = useState(false);
   const [animIn, setAnimIn] = useState(false);
@@ -218,7 +220,7 @@ const EventPopup: React.FC = () => {
             onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.8)')}
             onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
           >
-            {lang === 'BHS' ? 'Zatvori' : 'Close'}
+            {dict[lang].eventPopup.closeLabel}
           </button>
         </div>
       </div>

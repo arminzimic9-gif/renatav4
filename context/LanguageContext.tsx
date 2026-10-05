@@ -44,6 +44,23 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     fetchTranslations();
   }, []);
 
+  // Naslov i opis stranice (za Google i dijeljenje) iz admina, po jeziku.
+  useEffect(() => {
+    const seo = (dict as any)[lang]?.seo;
+    if (!seo) return;
+    if (seo.siteTitle) document.title = seo.siteTitle;
+    const setMeta = (selector: string, value: string) => {
+      const el = document.querySelector(selector);
+      if (el && value) el.setAttribute('content', value);
+    };
+    setMeta('meta[name="description"]', seo.siteDescription);
+    setMeta('meta[property="og:title"]', seo.siteTitle);
+    setMeta('meta[property="og:description"]', seo.siteDescription);
+    setMeta('meta[property="twitter:title"]', seo.siteTitle);
+    setMeta('meta[property="twitter:description"]', seo.siteDescription);
+    document.documentElement.lang = lang === 'BHS' ? 'bs' : 'en';
+  }, [lang, dict]);
+
   return (
     <LanguageContext.Provider value={{ lang, dict, isLoading }}>
       {children}

@@ -18,6 +18,15 @@ const SECTION_LABELS: Record<string, string> = {
   savingsCalculator: 'Kalkulator uštede',
   privacyPolicy: 'Politika privatnosti',
   podaciFirme: 'Podaci o firmi',
+  googleReviews: 'Google recenzije',
+  blogTexts: 'Blog (tekstovi stranice)',
+  contactForm: 'Kontakt forma',
+  newsletterPopup: 'Newsletter popup',
+  cookieBanner: 'Kolačići (cookie baner)',
+  eventPopup: 'Event popup (dugmad)',
+  languagePicker: 'Izbor jezika (početni ekran)',
+  seo: 'SEO (naslov i opis za Google)',
+  links: 'Linkovi (važe za oba jezika)',
 };
 
 export const ContentEditor: React.FC = () => {
